@@ -21,13 +21,15 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 # Add initial pyproject.toml file
 project_dir="packages/$project_name"
 mkdir --parents "$project_dir"
-printf '[build-system]
+cat > "$project_dir/pyproject.toml" <<EOF
+[build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "%s"
-version = "0.0.0"\n' "$project_name" > "$project_dir/pyproject.toml"
+name = "$project_name"
+version = "0.0.0"
+EOF
 
 # Add initial module files
 module_name="${project_name//-/_}" # Replace dashes (-) with underscores (_)
