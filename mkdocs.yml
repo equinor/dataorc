@@ -1,0 +1,35 @@
+site_name: DataOrc Documentation
+site_description: Unified documentation for DataOrc packages
+## Canonical site URL
+## Read the Docs provides READTHEDOCS_CANONICAL_URL env variable at build time, but
+## the plain MkDocs YAML parser doesn't understand !ENV without a plugin.
+## Options:
+## 1. Leave a static placeholder (current approach)
+## 2. Use mkdocs-macros-plugin or mike for versioned site_url logic
+## 3. Inject site_url via RTD 'Advanced Settings' or build step
+site_url: https://dataorc.readthedocs.io/
+repo_url: https://github.com/equinor/dataorc
+repo_name: equinor/dataorc
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+    - content.code.copy
+
+plugins:
+  - search
+  - git-revision-date-localized:
+      fallback_to_build_date: true
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - tables
+  - fenced_code
+
+nav:
+  - Home: index.md
+  - Version Matrix: version-matrix.md
