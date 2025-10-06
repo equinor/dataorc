@@ -1,0 +1,41 @@
+#############################################
+# Minimal .gitignore for dataorc (Python + docs)
+# Add more only when a real need surfaces.
+#############################################
+
+# Python bytecode / cache
+__pycache__/
+*.py[cod]
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Virtual environments (common names)
+.venv/
+venv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage*
+
+# Docs build output (MkDocs)
+site/
+
+# Editors
+.vscode/
+.idea/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Environment / secrets (local only — keep explicit minimal patterns)
+.env
+.env.*
+
+# Keep version matrix tracked (do NOT ignore)
+# docs/version-matrix.md
