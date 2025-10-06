@@ -3,6 +3,9 @@
   "release-type": "python",
   "separate-pull-requests": true,
   "packages": {
+    "packages/dataorc-utils": {
+      "package-name": "dataorc-utils"
+    },
     ".": {
       "package-name": "dataorc"
     }
