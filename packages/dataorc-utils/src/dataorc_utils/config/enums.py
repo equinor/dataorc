@@ -19,6 +19,10 @@ class LoadType(str, Enum):
     FULL = "full"
     INCREMENTAL = "incremental"
 
+    @classmethod
+    def default(cls) -> "LoadType":
+        return cls.INCREMENTAL
+
 
 class CoreParam(str, Enum):
     """Core parameters used across all pipelines."""
@@ -56,3 +60,16 @@ class CoreParam(str, Enum):
 
     # API Management (generalizable base URL)
     APIM_BASE_URL = "apim_base_url"
+
+
+# Default values - co-located with their semantic meaning
+class Defaults:
+    """Default values for pipeline configuration."""
+    
+    # Version defaults
+    VERSION = "v1"
+    
+    # Processing method defaults
+    BRONZE_PROCESSING_METHOD = "incremental"
+    SILVER_PROCESSING_METHOD = "incremental" 
+    GOLD_PROCESSING_METHOD = "delta"

@@ -1,40 +1,11 @@
 """
-Core library default values - truly generic defaults that apply to any data pipeline.
+Environment configuration builders.
 
-These are the only hardcoded defaults in the core library. Everything else should be
-configured at the repository or product level.
+Functions for building complete environment configurations from templates.
+No longer contains global defaults - those moved to enums.Defaults class.
 """
 
-from .enums import CoreParam, LoadType
-
-# Core library defaults - truly generic values that rarely change
-# NOTE: These are the SINGLE SOURCE OF TRUTH for all default values.
-# The CorePipelineConfig dataclass references these values to avoid duplication.
-CORE_LIBRARY_DEFAULTS = {
-    # Data pipeline layer versions (standard across most projects)
-    CoreParam.BRONZE_VERSION: "v1",
-    CoreParam.SILVER_VERSION: "v1",
-    CoreParam.GOLD_VERSION: "v1",
-    # Standard processing methods (can be overridden per product)
-    CoreParam.BRONZE_PROCESSING_METHOD: "incremental",
-    CoreParam.SILVER_PROCESSING_METHOD: "incremental",
-    CoreParam.GOLD_PROCESSING_METHOD: "delta",
-    # Standard load type
-    CoreParam.LOAD_TYPE: LoadType.INCREMENTAL.value,
-    # Table name default (generic placeholder)
-    CoreParam.TABLE_NAME: "table",
-}
-
-
-def _merge_repository_defaults(base: dict, repository_defaults: dict | None) -> dict:
-    """Merge repository defaults into the provided base config and return a new dict.
-
-    This helper avoids mutating the original base mapping.
-    """
-    merged = base.copy()
-    if repository_defaults:
-        merged.update(repository_defaults)
-    return merged
+from .enums import CoreParam
 
 
 def _generate_infra_names(config: dict, env_name: str, env_config: dict) -> None:
@@ -99,8 +70,8 @@ def build_environment_config(
     The implementation delegates small, well-documented responsibilities to
     private helper functions to make maintenance easier.
     """
-    # Start with core library defaults and merge repository defaults
-    config = _merge_repository_defaults(CORE_LIBRARY_DEFAULTS, repository_defaults)
+    # Start with repository defaults (or empty dict)
+    config = (repository_defaults or {}).copy()
 
     # Add environment name
     config[CoreParam.ENV] = env_name

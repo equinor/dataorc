@@ -6,8 +6,7 @@ import os
 from enum import Enum
 from typing import Dict, Optional
 
-from .defaults import CORE_LIBRARY_DEFAULTS
-from .enums import CoreParam, Environment, LoadType
+from .enums import CoreParam, Environment, LoadType, Defaults
 from .models import CorePipelineConfig
 
 
@@ -49,6 +48,18 @@ class PipelineParameterManager:
         self._config_cache: Optional[Dict[str, str]] = None
         self._local_environment = Environment.DEV  # Default for local development
 
+    def _get_default_value(self, param: CoreParam) -> str:
+        """Get default value for a core parameter."""
+        defaults_map = {
+            CoreParam.BRONZE_VERSION: Defaults.VERSION,
+            CoreParam.SILVER_VERSION: Defaults.VERSION,
+            CoreParam.GOLD_VERSION: Defaults.VERSION,
+            CoreParam.BRONZE_PROCESSING_METHOD: Defaults.BRONZE_PROCESSING_METHOD,
+            CoreParam.SILVER_PROCESSING_METHOD: Defaults.SILVER_PROCESSING_METHOD,
+            CoreParam.GOLD_PROCESSING_METHOD: Defaults.GOLD_PROCESSING_METHOD,
+        }
+        return defaults_map.get(param, "")
+
     def get_parameter_values(self, param_list: list = None) -> Dict[str, str]:
         """
         Get parameter values from dbutils widgets or environment variables.
@@ -84,7 +95,7 @@ class PipelineParameterManager:
                     config_dict[param_name] = env_value
                 else:
                     # Use defaults for local development
-                    config_dict[param_name] = CORE_LIBRARY_DEFAULTS.get(param, "")
+                    config_dict[param_name] = self._get_default_value(param)
 
         self._config_cache = config_dict
         return config_dict
@@ -100,33 +111,31 @@ class PipelineParameterManager:
             load_type=LoadType(values[CoreParam.LOAD_TYPE]),
             # Data Lake Structure Parameters
             domain=values.get(CoreParam.DOMAIN, ""),
-            table_name=values.get(
-                CoreParam.TABLE_NAME, CORE_LIBRARY_DEFAULTS[CoreParam.TABLE_NAME]
-            ),
+            table_name=values.get(CoreParam.TABLE_NAME, ""),
             product=values.get(CoreParam.PRODUCT, ""),
             bronze_version=values.get(
                 CoreParam.BRONZE_VERSION,
-                CORE_LIBRARY_DEFAULTS[CoreParam.BRONZE_VERSION],
+                self._get_default_value(CoreParam.BRONZE_VERSION),
             ),
             silver_version=values.get(
                 CoreParam.SILVER_VERSION,
-                CORE_LIBRARY_DEFAULTS[CoreParam.SILVER_VERSION],
+                self._get_default_value(CoreParam.SILVER_VERSION),
             ),
             gold_version=values.get(
-                CoreParam.GOLD_VERSION, CORE_LIBRARY_DEFAULTS[CoreParam.GOLD_VERSION]
+                CoreParam.GOLD_VERSION, self._get_default_value(CoreParam.GOLD_VERSION)
             ),
             # Processing Methods Parameters
             bronze_processing_method=values.get(
                 CoreParam.BRONZE_PROCESSING_METHOD,
-                CORE_LIBRARY_DEFAULTS[CoreParam.BRONZE_PROCESSING_METHOD],
+                self._get_default_value(CoreParam.BRONZE_PROCESSING_METHOD),
             ),
             silver_processing_method=values.get(
                 CoreParam.SILVER_PROCESSING_METHOD,
-                CORE_LIBRARY_DEFAULTS[CoreParam.SILVER_PROCESSING_METHOD],
+                self._get_default_value(CoreParam.SILVER_PROCESSING_METHOD),
             ),
             gold_processing_method=values.get(
                 CoreParam.GOLD_PROCESSING_METHOD,
-                CORE_LIBRARY_DEFAULTS[CoreParam.GOLD_PROCESSING_METHOD],
+                self._get_default_value(CoreParam.GOLD_PROCESSING_METHOD),
             ),
             # Azure infrastructure
             az_tenant_id=values.get(CoreParam.AZ_TENANT_ID, ""),

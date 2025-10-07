@@ -4,8 +4,7 @@ Core configuration data classes.
 
 from dataclasses import dataclass
 
-from .defaults import CORE_LIBRARY_DEFAULTS
-from .enums import CoreParam, Environment, LoadType
+from .enums import Environment, LoadType, Defaults
 
 
 @dataclass
@@ -23,26 +22,14 @@ class CorePipelineConfig:
     domain: str = ""  # Business domain namespace
     product: str = ""  # Product/project identifier
     table_name: str = ""  # Table name within the product
-    bronze_version: str = CORE_LIBRARY_DEFAULTS[
-        CoreParam.BRONZE_VERSION
-    ]  # Version for bronze layer (source system version)
-    silver_version: str = CORE_LIBRARY_DEFAULTS[
-        CoreParam.SILVER_VERSION
-    ]  # Version for silver layer (can override)
-    gold_version: str = CORE_LIBRARY_DEFAULTS[
-        CoreParam.GOLD_VERSION
-    ]  # Version for gold layer (can override)
+    bronze_version: str = Defaults.VERSION  # Version for bronze layer (source system version)
+    silver_version: str = Defaults.VERSION  # Version for silver layer (can override)
+    gold_version: str = Defaults.VERSION  # Version for gold layer (can override)
 
     # Processing Methods (user-configurable, layer-specific)
-    bronze_processing_method: str = CORE_LIBRARY_DEFAULTS[
-        CoreParam.BRONZE_PROCESSING_METHOD
-    ]  # incremental, full, delta
-    silver_processing_method: str = CORE_LIBRARY_DEFAULTS[
-        CoreParam.SILVER_PROCESSING_METHOD
-    ]  # incremental, full, delta
-    gold_processing_method: str = CORE_LIBRARY_DEFAULTS[
-        CoreParam.GOLD_PROCESSING_METHOD
-    ]  # incremental, full, delta
+    bronze_processing_method: str = Defaults.BRONZE_PROCESSING_METHOD  # incremental, full, delta
+    silver_processing_method: str = Defaults.SILVER_PROCESSING_METHOD  # incremental, full, delta
+    gold_processing_method: str = Defaults.GOLD_PROCESSING_METHOD  # incremental, full, delta
 
     # Azure infrastructure (repository-configurable)
     az_tenant_id: str = ""
@@ -87,7 +74,7 @@ class CorePipelineConfig:
             elif layer == "gold":
                 version = self.gold_version
             else:
-                version = CORE_LIBRARY_DEFAULTS[CoreParam.BRONZE_VERSION]
+                version = Defaults.VERSION
 
         # Resolve processing method inline
         if processing_method_override:
@@ -100,9 +87,7 @@ class CorePipelineConfig:
             elif layer == "gold":
                 processing_method = self.gold_processing_method
             else:
-                processing_method = CORE_LIBRARY_DEFAULTS[
-                    CoreParam.BRONZE_PROCESSING_METHOD
-                ]
+                processing_method = Defaults.BRONZE_PROCESSING_METHOD
 
         return f"{self.datalake_container_name}/{layer}/{self.domain}/{self.product}/{self.table_name}/{version}/output/{processing_method}"
 
