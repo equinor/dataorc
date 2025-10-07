@@ -107,4 +107,3 @@ If you encounter issues with the local documentation server:
 3. **Version conflicts**: Check that your Python environment matches the requirements
 4. **Virtual environment**: Ensure you're in the correct virtual environment
 
-The local preview gives you the exact same experience as the deployed Read the Docs site!
