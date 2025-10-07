@@ -73,3 +73,17 @@ def test_validate_rules_fail_uppercase_domain():
     with pytest.raises(ValueError) as exc:
         cfg.validate_rules()
     assert "uppercase" in str(exc.value).lower()
+
+
+def test_validate_rules_fail_bad_version_pattern():
+    cfg = make_config(bronze_version="version1")  # missing leading 'v'
+    with pytest.raises(ValueError) as exc:
+        cfg.validate_rules()
+    assert "pattern" in str(exc.value).lower() or "v<integer>" in str(exc.value)
+
+
+def test_validate_rules_pass_custom_version_override():
+    # Overrides should not break rule when format is correct
+    cfg = make_config()
+    path = cfg.get_lake_path("bronze", version_override="v99")
+    assert path.endswith("/v99/output/incremental")

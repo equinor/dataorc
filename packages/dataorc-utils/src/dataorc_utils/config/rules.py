@@ -12,6 +12,7 @@ Add new rules by appending to `RULES` or passing a custom list to
 from __future__ import annotations
 
 from typing import Callable, Iterable, List, TYPE_CHECKING
+import re
 
 if TYPE_CHECKING:  # pragma: no cover
     from .models import CorePipelineConfig
@@ -26,7 +27,34 @@ def lowercase_lake_path_rule(config: "CorePipelineConfig", layer: str) -> bool:
     return True
 
 
-RULES: List[RuleFunc] = [lowercase_lake_path_rule]
+_VERSION_PATTERN = re.compile(r"^v[0-9]+$")
+
+
+def version_format_rule(config: "CorePipelineConfig", layer: str) -> bool:
+    """Ensure the version segment for the layer matches pattern v<integer>.
+
+    It derives the layer-specific version attribute (e.g. bronze_version) and validates
+    it matches the required pattern. Also verifies that the lake path actually embeds
+    that exact version token (defensive consistency check).
+    """
+    attr = f"{layer}_version"
+    if not hasattr(config, attr):  # defensive: unknown layer
+        return True
+    value = getattr(config, attr)
+    if not isinstance(value, str) or not _VERSION_PATTERN.match(value):
+        raise ValueError(
+            f"Version for layer '{layer}' must match pattern 'v<integer>' (e.g. v1); got: {value!r}"
+        )
+    path = config.get_lake_path(layer)
+    # Ensure token boundary match in path
+    if f"/{value}/" not in path:
+        raise ValueError(
+            f"Lake path for layer '{layer}' does not include expected version token '{value}': {path}"
+        )
+    return True
+
+
+RULES: List[RuleFunc] = [lowercase_lake_path_rule, version_format_rule]
 
 
 def run_rules_checks(
@@ -56,5 +84,6 @@ __all__ = [
     "RuleFunc",
     "RULES",
     "lowercase_lake_path_rule",
+    "version_format_rule",
     "run_rules_checks",
 ]
