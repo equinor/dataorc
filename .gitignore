@@ -1,6 +1,6 @@
-# ------------------------------
+#############################################
 # Global ignores for dataorc repo
-# ------------------------------
+#############################################
 
 # Python bytecode / cache
 __pycache__/
@@ -16,7 +16,6 @@ wheelhouse/
 .eggs/
 *.egg
 pip-wheel-metadata/
-
 
 # Virtual environments
 .venv/
@@ -48,7 +47,7 @@ logs/
 
 # IDE / Editor
 .vscode/
-
+.idea/
 
 # OS artifacts
 .DS_Store
@@ -57,6 +56,7 @@ Thumbs.db
 # Env / local config
 .python-version
 
+
 # Temporary files
 *.tmp
 *.temp
@@ -64,3 +64,15 @@ Thumbs.db
 
 # Misc
 *__pycache__
+
+
+# Docs build output (MkDocs)
+site/
+
+
+
+
+
+
+
+
