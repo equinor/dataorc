@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.2](https://github.com/equinor/dataorc/compare/dataorc-v0.1.1...dataorc-v0.1.2) (2025-10-08)
+
+
+### Documentation
+
+* add CI status badge ([#9](https://github.com/equinor/dataorc/issues/9)) ([8de41fe](https://github.com/equinor/dataorc/commit/8de41fe192418599a675d46add6bfb6da1a77653))
+* bootstrap package ([#6](https://github.com/equinor/dataorc/issues/6)) ([afbb765](https://github.com/equinor/dataorc/commit/afbb76573808068b7201f6a31632d33d93fea87b))
+
 ## [0.1.1](https://github.com/equinor/dataorc/compare/dataorc-v0.1.0...dataorc-v0.1.1) (2025-10-06)
 
 
