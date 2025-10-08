@@ -26,7 +26,7 @@ jobs:
     with:
       requirements: docs/requirements.txt
       upload_artifact: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      git_fetch_depth: 0 # Required by the "mkdocs-git-revision-date-localized-plugin" plugin
+      git_fetch_depth: 0 # Required by mkdocs-git-revision-date-localized-plugin (listed in requirements file)
 
   deploy:
     name: Deploy
