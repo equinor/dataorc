@@ -5,3 +5,5 @@ build-backend = "hatchling.build"
 [project]
 name = "dataorc"
 version = "0.1.1"
+license = "MIT"
+license-files = ["LICENSE"]
