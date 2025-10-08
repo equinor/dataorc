@@ -1,0 +1,17 @@
+{
+  "name": "dataorc",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "remoteUser": "vscode",
+  // Install Python version specified in .python-version
+  // Ref: https://docs.astral.sh/uv/guides/install-python/
+  "postCreateCommand": "uv python install --default",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "charliermarsh.ruff"
+      ]
+    }
+  }
+}
