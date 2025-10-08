@@ -1,20 +1,39 @@
 site_name: DataOrc Documentation
 site_description: Unified documentation for DataOrc packages
-## Canonical site URL
-## Read the Docs provides READTHEDOCS_CANONICAL_URL env variable at build time, but
-## the plain MkDocs YAML parser doesn't understand !ENV without a plugin.
-## Options:
-## 1. Leave a static placeholder (current approach)
-## 2. Use mkdocs-macros-plugin or mike for versioned site_url logic
-## 3. Inject site_url via RTD 'Advanced Settings' or build step
+site_url: https://equinor.github.io/dataorc/
 repo_url: https://github.com/equinor/dataorc
 repo_name: equinor/dataorc
+edit_uri: edit/main/docs/
 
 theme:
   name: material
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: red
+      accent: red
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: red
+      accent: red
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   features:
     - navigation.instant
     - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+    - content.action.edit
 
 plugins:
   - search
@@ -28,4 +47,3 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Version Matrix: version-matrix.md
