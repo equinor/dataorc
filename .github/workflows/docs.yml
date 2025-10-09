@@ -31,7 +31,7 @@ jobs:
   deploy:
     name: Deploy
     needs: build
-    if: needs.build.outputs.artifact_uploaded
+    if: needs.build.outputs.artifact_uploaded == 'true'
     uses: equinor/ops-actions/.github/workflows/github-pages.yml@v9.26.0
     with:
       artifact_name: ${{ needs.build.outputs.artifact_name }}
