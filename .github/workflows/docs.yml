@@ -1,7 +1,7 @@
 name: Docs
 
 on:
-  # Run on PR to ensure docs build successfully before merging to main
+  # Ensure successful build before merging PR to main
   pull_request:
     branches:
       - main
