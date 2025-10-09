@@ -1,0 +1,70 @@
+#############################################
+# Global ignores for dataorc repo
+#############################################
+
+# Python bytecode / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Packaging / build outputs
+.build/
+build/
+dist/
+wheelhouse/
+*.egg-info/
+.eggs/
+*.egg
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env
+.env.*
+.venv.*
+
+# Tool caches
+.pytest_cache/
+.coverage
+.coverage.*
+.cache/
+.mypy_cache/
+.ruff_cache/
+.nox/
+.tox/
+htmlcov/
+
+# Logs & runtime output
+*.log
+logs/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Env / local config
+.python-version
+
+
+# Temporary files
+*.tmp
+*.temp
+~$*
+
+# Misc
+*__pycache__
+
+
+# Docs build output (MkDocs)
+site/
