@@ -5,3 +5,21 @@ build-backend = "hatchling.build"
 [project]
 name = "dataorc"
 version = "0.1.1"
+
+# Ensure the root-level 'macros' package (used by MkDocs build) is included when the
+# project is installed (editable or normal). Without this, the docs build running
+# outside the repository root may fail to import the 'macros' module.
+[tool.hatch.build.targets.wheel]
+packages = [
+	"src/dataorc",  # main library package
+	"macros"        # docs macro pluglet (kept generic per current repo layout)
+]
+
+# Include macros in sdist as well (plus standard metadata files if extended later).
+[tool.hatch.build.targets.sdist]
+include = [
+	"src/dataorc",
+	"macros",
+	"CHANGELOG.md",
+	"README.md"
+]
