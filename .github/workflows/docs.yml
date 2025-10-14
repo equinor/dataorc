@@ -16,10 +16,7 @@ on:
     paths:
       - docs/**
       - mkdocs.yml
-
-env:
-  PYTHONPATH: ${{ github.workspace }}/docs
-
+      
 jobs:
   build:
     name: Build
