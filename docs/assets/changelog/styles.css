@@ -1,0 +1,102 @@
+/* Changelog feature styles (moved from assets/changelog.css) */
+
+.changelog-filter-panel {
+  padding: 1rem 1rem 1.25rem;
+  background: var(--md-surface);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  position: relative; /* allow z-index stacking */
+  overflow: visible; /* ensure native dropdown can extend */
+  z-index: 20; /* above sidebar backgrounds */
+}
+
+.changelog-filter-panel h4 { margin: 0; font-size: .85rem; letter-spacing: .5px; text-transform: uppercase; opacity: .7; }
+.changelog-filter-panel label { display:none; }
+.changelog-filter-panel .hint { margin: 0; font-size: .7rem; line-height: 1.1rem; opacity: .6; }
+
+/* Custom dropdown */
+.chg-dropdown { position: relative; width: 100%; font-size: .85rem; }
+.chg-dropdown__button {
+  width: 100%;
+  text-align: left;
+  padding: .6rem .9rem;
+  padding-right: 2.4rem;
+  background: var(--md-code-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 10px;
+  color: var(--md-default-fg-color);
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  line-height: 1.1rem;
+  position: relative;
+  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.chg-dropdown__button:hover { border-color: var(--md-default-fg-color--lighter, rgba(0,0,0,0.25)); }
+.chg-dropdown__button:focus { outline: none; border-color: var(--md-accent-fg-color); box-shadow: 0 0 0 2px var(--md-accent-fg-color--transparent); }
+.chg-dropdown.is-open .chg-dropdown__button { border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
+.chg-dropdown__label { font-size: .65rem; text-transform: uppercase; opacity: .55; letter-spacing: .5px; }
+.chg-dropdown__current { flex: 1 1 auto; font-weight: 600; }
+.chg-dropdown__arrow { position: absolute; right: .85rem; top: 50%; width: .9rem; height: .9rem; transform: translateY(-50%); pointer-events: none; }
+.chg-dropdown__arrow::before { content: ""; display: block; width: 100%; height: 100%; mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000"><path d="M7 10l5 5 5-5z"/></svg>') center/contain no-repeat; background: currentColor; opacity: .7; transition: transform .15s ease; }
+.chg-dropdown.is-open .chg-dropdown__arrow::before { transform: rotate(180deg); }
+
+.chg-dropdown__list {
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(100% + .35rem);
+  margin: 0; padding: .35rem 0;
+  list-style: none;
+  /* Use an explicitly opaque background to avoid underlying text showing through */
+  background: var(--md-default-bg-color, #fff);
+  /* Fallback (older themes) */
+  background-color: var(--md-default-bg-color, #fff);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px -2px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.08);
+  max-height: 14rem;
+  overflow: auto;
+  display: none;
+  z-index: 400;
+  /* Ensure blending/backdrop effects from ancestors are isolated */
+  isolation: isolate;
+}
+.chg-dropdown.is-open .chg-dropdown__list { display: block; }
+.chg-dropdown__option { padding: .5rem .9rem; cursor: pointer; white-space: nowrap; }
+.chg-dropdown__option:hover { background: var(--md-default-fg-color--lightest); }
+.chg-dropdown__option.is-active { background: var(--md-accent-fg-color--transparent); font-weight: 600; }
+.chg-dropdown__option:focus { outline: none; }
+@media (max-width: 820px) { .chg-dropdown__list { max-height: 50vh; } }
+
+/* Sticky by default, but allow full dropdown expansion by disabling sticky when focused */
+.md-sidebar--secondary .changelog-filter-panel { position: sticky; top: 5.5rem; margin-bottom: 1.5rem; }
+/* With custom dropdown we can keep sticky; dropdown itself handles layering */
+/* Ensure ancestors don't clip the expanded native select dropdown on some browsers */
+.md-sidebar--secondary, .md-sidebar--secondary .md-sidebar__inner, .md-container, .md-main, .md-main__inner { overflow: visible !important; }
+@media (max-width: 1000px) { .md-sidebar--secondary .changelog-filter-panel { position: static; top: auto; } }
+
+.changelog-entry { margin-bottom: 1rem; border: 1px solid var(--md-default-fg-color--lightest); border-radius: 6px; padding: .5rem 1rem .75rem 1rem; background: var(--md-code-bg-color); }
+.changelog-entry summary { cursor: pointer; font-weight: 600; list-style: none; }
+.changelog-entry summary .chg-meta { display: inline-flex; gap: .5rem; align-items: baseline; font-size: .85rem; }
+.chg-pkg { font-weight: 700; color: var(--md-accent-fg-color); }
+.chg-version { font-family: var(--md-code-font-family, monospace); background: var(--md-default-fg-color--lightest); padding: .15rem .4rem; border-radius: 4px; font-size: .75rem; }
+.chg-date { font-size: .7rem; opacity: .65; }
+.chg-body { margin-top: .5rem; font-size: .8rem; line-height: 1.3rem; display: flex; flex-direction: column; gap: .4rem; }
+.chg-source { font-size: .65rem; opacity: .6; margin-bottom: .25rem; }
+.chg-cat { margin: 1rem 0 .35rem; font-size: .9rem; font-weight: 700; letter-spacing: .3px; }
+.chg-cat .badge { all: unset; font-weight: 700; font-size: .9rem; color: var(--md-default-fg-color); }
+ul.chg-list { margin: 0 0 .5rem 1.1rem; padding: 0; list-style: disc; }
+ul.chg-list li { margin: 0 0 .25rem; }
+code.sha { background: var(--md-default-fg-color--lightest); border-radius: 3px; padding: .1rem .3rem; font-size: .65rem; vertical-align: baseline; }
+.chg-link { text-decoration: none; color: var(--md-accent-fg-color); border-bottom: 1px dashed var(--md-accent-fg-color--transparent); }
+.chg-link:hover { text-decoration: underline; }
+.chg-commit { font-family: var(--md-code-font-family, monospace); font-size: .7rem; background: var(--md-default-fg-color--lightest); padding: .15rem .35rem; border-radius: 4px; text-decoration: none; color: var(--md-default-fg-color); border: 1px solid var(--md-default-fg-color--lighter, rgba(0,0,0,0.1)); transition: background .15s ease, box-shadow .15s ease; }
+.chg-commit:hover { background: var(--md-accent-fg-color--transparent); box-shadow: 0 0 0 2px var(--md-accent-fg-color--transparent); }
+.changelog-entry summary::-webkit-details-marker { display: none; }
+.changelog-entry[open] { border-color: var(--md-accent-fg-color--light); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }

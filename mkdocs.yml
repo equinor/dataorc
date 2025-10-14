@@ -38,6 +38,9 @@ plugins:
   - search
   - git-revision-date-localized:
       fallback_to_build_date: true
+  - macros:
+      modules:
+        - macros
 
 markdown_extensions:
   - admonition
@@ -46,3 +49,9 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Changelogs: changelogs.md
+
+extra_javascript:
+  - assets/changelog/filter.js
+extra_css:
+  - assets/changelog/styles.css
