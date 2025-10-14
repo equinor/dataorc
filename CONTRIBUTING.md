@@ -35,3 +35,40 @@ Adding and publishing a new package requires some initial setup:
     - **Environment name**: `pypi`
 
 Once the project files have been created and the trusted publisher has been registered, you can start adding features to your package!
+
+## Contributing to Documentation
+
+We use [MkDocs](https://www.mkdocs.org/) with the [Material theme](https://squidfunk.github.io/mkdocs-material/) for documentation. Changes are automatically deployed to <https://equinor.github.io/dataorc/> when merged to main.
+
+### Quick Start
+
+1. **Setup**:
+
+   ```console
+   uv venv
+   .\.venv\Scripts\Activate.ps1  # Windows
+   uv pip install -r docs/requirements.txt
+   ```
+
+2. **Preview locally**:
+
+   ```console
+   python -m mkdocs serve
+   ```
+
+   Documentation available at <http://127.0.0.1:8000/dataorc/>
+
+3. **Test before PR**:
+
+   ```console
+   python -m mkdocs build --strict
+   ```
+
+### Adding Content
+
+- Edit `.md` files in `docs/` directory
+- Add new pages to `nav` section in `mkdocs.yml`
+- Use standard Markdown syntax
+
+**Note**: Always use `python -m mkdocs` (not just `mkdocs`) to avoid path issues.
+
