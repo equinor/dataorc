@@ -1,30 +1,29 @@
-// Changelog filter & relocation script (custom dropdown variant)
-document.addEventListener('DOMContentLoaded', () => {
-  /* Move panel into secondary sidebar (unchanged logic) */
-  const panel = document.querySelector('.changelog-filter-panel[data-move-to="secondary-sidebar"]');
-  if (panel) {
-    let secondary = document.querySelector('.md-sidebar--secondary');
-    if (!secondary) {
-      const layout = document.querySelector('.md-container');
-      if (layout) {
-        secondary = document.createElement('div');
-        secondary.className = 'md-sidebar md-sidebar--secondary';
-        layout.appendChild(secondary);
-      }
-    }
-    if (secondary) {
-      const inner = secondary.querySelector('.md-sidebar__inner') || (() => {
-        const div = document.createElement('div');
-        div.className = 'md-sidebar__inner';
-        secondary.appendChild(div);
-        return div;
-      })();
-      inner.prepend(panel);
-      panel.removeAttribute('data-move-to');
-    }
+// Changelog filter script (custom dropdown variant) - static panel version
+function ensurePanelInSidebar(panel) {
+  if (!panel) return;
+  // Already inside a secondary sidebar inner container
+  if (panel.closest('.md-sidebar--secondary')) return;
+  let secondary = document.querySelector('.md-sidebar--secondary');
+  if (!secondary) {
+    const layout = document.querySelector('.md-container');
+    if (!layout) return; // bail if layout not ready yet
+    secondary = document.createElement('div');
+    secondary.className = 'md-sidebar md-sidebar--secondary';
+    layout.appendChild(secondary);
   }
+  const inner = secondary.querySelector('.md-sidebar__inner') || (() => {
+    const div = document.createElement('div');
+    div.className = 'md-sidebar__inner';
+    secondary.appendChild(div);
+    return div;
+  })();
+  inner.prepend(panel);
+}
 
-  const dropdown = document.querySelector('.chg-dropdown');
+function initChangelogFilter() {
+  const panel = document.querySelector('.changelog-filter-panel');
+  ensurePanelInSidebar(panel);
+  const dropdown = panel && panel.querySelector('.chg-dropdown');
   if (!dropdown) return;
   const button = dropdown.querySelector('.chg-dropdown__button');
   const list = dropdown.querySelector('.chg-dropdown__list');
@@ -128,4 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
       setOpen(false);
     }
   });
-});
+}
+
+// Support MkDocs Material instant navigation & normal loads
+if (window.document$ && typeof window.document$.subscribe === 'function') {
+  window.document$.subscribe(initChangelogFilter);
+}
+document.addEventListener('DOMContentLoaded', initChangelogFilter);

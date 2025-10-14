@@ -1,16 +1,12 @@
-"""Constants and compiled regular expressions for changelog macro parsing.
-
-Separated from the original monolithic main.py to keep parsing / rendering
-modules focused and easier to test or extend.
-"""
+"""Constants and compiled regular expressions for changelog macro parsing."""
 
 from __future__ import annotations
 
 import re
 from pathlib import Path
 
-# Repository root (macros/ lives directly under the repo root)
-ROOT = Path(__file__).resolve().parent.parent
+# Repository root (two levels up from this file: docs/macros/ -> repo root)
+ROOT = Path(__file__).resolve().parents[2]
 
 # Accepted filename casings for changelog discovery
 CHANGELOG_FILENAMES = ["CHANGELOG.md", "Changelog.md", "changelog.md"]

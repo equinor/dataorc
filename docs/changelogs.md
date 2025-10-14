@@ -18,8 +18,8 @@ Below you'll find aggregated changelog entries from all discovered packages (new
 </details>
 {% endfor %}
 
-<!-- Filter panel will be programmatically moved into the .md-sidebar--secondary -->
-<div class="changelog-filter-panel" data-move-to="secondary-sidebar">
+<!-- Static filter panel (no JS relocation) -->
+<div class="changelog-filter-panel">
   <h4>Filter</h4>
   <div class="chg-dropdown" id="package-filter" data-value="">
     <button type="button" class="chg-dropdown__button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="package-filter-label package-filter-current">

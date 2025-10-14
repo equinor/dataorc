@@ -17,9 +17,8 @@ on:
       - docs/**
       - mkdocs.yml
 
-# Ensure Python can import top-level 'macros' package during MkDocs build
 env:
-  PYTHONPATH: ${{ github.workspace }}
+  PYTHONPATH: ${{ github.workspace }}/docs
 
 jobs:
   build:

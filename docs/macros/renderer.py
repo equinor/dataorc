@@ -1,8 +1,4 @@
-"""HTML rendering helpers for parsed changelog sections.
-
-Only a deliberately small subset of Markdown is supported, matching the
-original implementation requirements.
-"""
+"""HTML rendering helpers for parsed changelog sections."""
 
 from __future__ import annotations
 
@@ -12,22 +8,12 @@ from typing import List
 
 from .constants import CATEGORY_RE, COMMIT_MARKDOWN_LINK_RE, MARKDOWN_LINK_RE
 
-# Precompiled patterns for micro-optimizations
 _BULLET_RE = re.compile(r"^\s*[-*+]\s+(.*)$")
 _PARENS_COMMIT_RE = re.compile(r"\((<a[^>]+class=\"chg-commit\"[^>]*>[^<]+</a>)\)")
 _GENERIC_CATEGORY_RE = re.compile(r"^###\s+(.+?)\s*$")
 
 
 def render_lines_to_html(lines: List[str]) -> str:
-    """Render a list of raw changelog body lines to (safe) HTML.
-
-    Behavior mirrors the previous _render_lines_to_html implementation to
-    avoid any change in output. Category headings become badge-styled h4
-    elements, bullet lists become <ul>, paragraphs are wrapped in <p>.
-    Existing markdown links and commit links are transformed into styled
-    anchors. Bare SHAs are intentionally not auto-linked to avoid false
-    positives.
-    """
     html_out: List[str] = []
     in_list = False
     for raw in lines:
@@ -39,7 +25,6 @@ def render_lines_to_html(lines: List[str]) -> str:
             continue
         cat = CATEGORY_RE.match(line)
         if not cat:
-            # Fallback: treat any ### Heading as a category if it matches generic pattern
             generic = _GENERIC_CATEGORY_RE.match(line)
             if generic:
                 cat = generic
@@ -88,7 +73,6 @@ def render_lines_to_html(lines: List[str]) -> str:
     if in_list:
         html_out.append("</ul>")
     rendered = "\n".join(html_out)
-    # Remove parentheses directly wrapping commit anchors e.g. (<a ... class="chg-commit">abc1234</a>)
     rendered = _PARENS_COMMIT_RE.sub(r"\1", rendered)
     return rendered
 
