@@ -45,9 +45,9 @@ We use [MkDocs](https://www.mkdocs.org/) with the [Material theme](https://squid
 1. **Setup**:
 
    ```console
-   python -m venv .venv
+   uv venv
    .\.venv\Scripts\Activate.ps1  # Windows
-   pip install -r docs/requirements.txt
+   uv pip install -r docs/requirements.txt
    ```
 
 2. **Preview locally**:
