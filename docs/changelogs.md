@@ -1,7 +1,7 @@
 # Changelogs
 
 {% for entry in changelog_entries %}
-<details class="changelog-entry" data-package="{{ entry.package }}">
+<details class="changelog-entry" data-package="{{ entry.package }}" open>
   <summary>
     <span class="chg-meta">
       <span class="chg-pkg">{{ entry.package }}</span>
@@ -10,7 +10,6 @@
     </span>
   </summary>
   <div class="chg-body">
-    <div class="chg-source">Source: <code>{{ entry.path }}</code></div>
     {{ entry.html | safe }}
   </div>
 </details>
