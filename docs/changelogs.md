@@ -1,7 +1,5 @@
 # Changelogs
 
-Below you'll find aggregated changelog entries from all discovered packages (newest first). Use the filter in the secondary sidebar (right side on wide screens) to narrow by package.
-
 {% for entry in changelog_entries %}
 <details class="changelog-entry" data-package="{{ entry.package }}">
   <summary>

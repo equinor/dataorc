@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-CHANGELOG_FILENAMES = ["CHANGELOG.md", "Changelog.md", "changelog.md"]
+CHANGELOG_FILENAME = "CHANGELOG.md"
 
 SEMVER_RE = re.compile(r"^## \[?([0-9]+\.[0-9]+\.[0-9]+)\]?.*?\((\d{4}-\d{2}-\d{2})\)")
 CATEGORY_RE = re.compile(
@@ -19,7 +19,7 @@ COMMIT_MARKDOWN_LINK_RE = re.compile(
 
 __all__ = [
     "ROOT",
-    "CHANGELOG_FILENAMES",
+    "CHANGELOG_FILENAME",
     "SEMVER_RE",
     "CATEGORY_RE",
     "MARKDOWN_LINK_RE",
