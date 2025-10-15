@@ -1,7 +1,5 @@
 """HTML rendering helpers for parsed changelog sections."""
 
-from __future__ import annotations
-
 import html
 import re
 from typing import List

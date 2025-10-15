@@ -1,7 +1,5 @@
 """Parsing logic for CHANGELOG files into structured section dictionaries."""
 
-from __future__ import annotations
-
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List

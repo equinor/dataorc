@@ -1,7 +1,5 @@
 """Constants and compiled regular expressions for changelog macro parsing."""
 
-from __future__ import annotations
-
 import re
 from pathlib import Path
 
