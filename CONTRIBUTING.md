@@ -4,27 +4,25 @@
 
 Adding and publishing a new package requires some initial setup:
 
-1. Change to the scripts directory:
+1. Change to the packages directory:
 
     ```console
-    cd scripts
+    cd packages
     ```
 
-1. Run the `bootstrap-package.sh` script to bootstrap a new package:
+1. Create a new project:
 
     ```console
-    ./bootstrap-package.sh <project-name>
+    uv init --package <project-name>
     ```
 
-    For example, to bootstrap a new package `dataorc-core`, run the script with the following arguments:
+    For example, create a new project `dataorc-example`:
 
     ```console
-    ./bootstrap-package.sh dataorc-core
+    uv init --package dataorc-example
     ```
 
-    The project name must contain only lowercase letters and dashes (`-`).
-
-    A new directory `packages/<project-name>` containing the required project files will be created.
+1. Add the package to `release-please-config.json`.
 
 1. Contact an administrator of the [Equinor user on PyPI](https://pypi.org/user/Equinor/) and request a ["pending" trusted publisher](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/#github-actions) to be registered with the following configuration:
 
