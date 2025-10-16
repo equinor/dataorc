@@ -43,6 +43,11 @@ markdown_extensions:
   - admonition
   - toc:
       permalink: true
+  # Enable the Snippets extension to add the ability to embed content from
+  # external files.
+  # Ref: https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown-extensions/#snippets
+  - pymdownx.snippets
 
 nav:
   - Home: index.md
+  - Changelog: changelog/index.md
