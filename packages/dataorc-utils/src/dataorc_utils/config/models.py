@@ -55,12 +55,16 @@ class CorePipelineConfig:
     az_client_id: str = ""
     az_subscription_id: str = ""
     az_keyvault_scope: str = ""
+    # Convenience properties that return the canonical lake path for each layer.
 
     def get_lake_path(
         self,
         layer: str,
         processing_method_override: str = None,
         version_override: str = None,
+        domain_override: str = None,
+        product_override: str = None,
+        table_name_override: str = None,
     ) -> str:
         """
             Generate Data Lake path following the standard structure.
@@ -75,36 +79,56 @@ class CorePipelineConfig:
             Returns:
                 Full data lake path
         """
-        if not all([self.domain, self.product]):
+        # Allow callers to override identifiers; fall back to the instance values.
+        domain = domain_override or self.domain
+        product = product_override or self.product
+        table_name = table_name_override or self.table_name
+
+        if not all([domain, product]):
             raise ValueError("domain and product must be set to generate lake path")
 
-        # Resolve version inline
-        if version_override:
-            version = version_override
-        else:
-            if layer == "bronze":
-                version = self.bronze_version
-            elif layer == "silver":
-                version = self.silver_version
-            elif layer == "gold":
-                version = self.gold_version
-            else:
-                version = Defaults.VERSION
+        # Resolve attribute names directly (e.g. bronze_version, bronze_processing_method)
+        v_attr = f"{layer}_version"
+        p_attr = f"{layer}_processing_method"
 
-        # Resolve processing method inline
-        if processing_method_override:
-            processing_method = processing_method_override
-        else:
-            if layer == "bronze":
-                processing_method = self.bronze_processing_method
-            elif layer == "silver":
-                processing_method = self.silver_processing_method
-            elif layer == "gold":
-                processing_method = self.gold_processing_method
-            else:
-                processing_method = Defaults.BRONZE_PROCESSING_METHOD
+        version = version_override or getattr(self, v_attr, Defaults.VERSION)
+        processing_method = processing_method_override or getattr(
+            self, p_attr, Defaults.BRONZE_PROCESSING_METHOD
+        )
 
-        return f"{self.datalake_container_name}/{layer}/{self.domain}/{self.product}/{self.table_name}/{version}/output/{processing_method}"
+        return f"{self.datalake_container_name}/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}"
+
+    def get_work_path(
+        self,
+        layer: str,
+        version_override: str = None,
+        domain_override: str = None,
+        product_override: str = None,
+        table_name_override: str = None,
+    ) -> str:
+        """Return the working path for a layer.
+
+        This reuses `get_lake_path(...)` and replaces the trailing
+        `/output/{processing_method}` segment with `/work`. If the
+        expected `/output/` segment isn't found, `/work` is appended.
+        """
+        # Reuse get_lake_path to compose the canonical path and then
+        # convert it to a work path by replacing the output segment.
+        lake_path = self.get_lake_path(
+            layer,
+            processing_method_override=None,
+            version_override=version_override,
+            domain_override=domain_override,
+            product_override=product_override,
+            table_name_override=table_name_override,
+        )
+
+        marker = "/output/"
+        idx = lake_path.find(marker)
+        if idx >= 0:
+            return lake_path[:idx] + "/work"
+        # Fallback: append /work if format differs
+        return lake_path.rstrip("/") + "/work"
 
     def validate_rules(self, layers: list | None = None) -> bool:
         """Run repository-config rules against this CorePipelineConfig.
@@ -116,3 +140,15 @@ class CorePipelineConfig:
         from .rules import run_rules_checks
 
         return run_rules_checks(self, layers)
+
+    @property
+    def bronze_lake_path(self) -> str:
+        return self.get_lake_path("bronze")
+
+    @property
+    def silver_lake_path(self) -> str:
+        return self.get_lake_path("silver")
+
+    @property
+    def gold_lake_path(self) -> str:
+        return self.get_lake_path("gold")

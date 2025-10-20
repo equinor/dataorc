@@ -34,6 +34,30 @@ Treat it as read-only. Rebuild instead of mutating.
 ## Methods
 
 - `get_lake_path(layer, processing_method_override=None, version_override=None)` – returns folder path; you can override method or version ad hoc.
+- `get_work_path(layer, version_override=None)` – returns the working path for the layer (same path up to the version, but ends with `/work` instead of `/output/{processing_method}`).
+
+### Examples
+
+Basic lake path for bronze:
+
+```python
+cfg.get_lake_path("bronze")
+# -> "<container>/bronze/<domain>/<product>/<table_name>/v1/output/incremental"
+```
+
+Override the processing method and version for a single call:
+
+```python
+cfg.get_lake_path("gold", processing_method_override="full", version_override="v9")
+# -> "<container>/gold/<domain>/<product>/<table_name>/v9/output/full"
+```
+
+Get the work path (no processing method, ends with `/work`):
+
+```python
+cfg.get_work_path("bronze")
+# -> "<container>/bronze/<domain>/<product>/<table_name>/v1/work"
+```
 - `validate_rules(layers=None)` – raises `ValueError` on rule failures (invoked automatically during build).
 
 ## Advanced usage

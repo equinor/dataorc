@@ -58,6 +58,7 @@ cfg = mgr.build_core_config(infra, domain="sales", product="orders", table_name=
 
 print_config(cfg, title="Validated Pipeline Config")
 print(f"Path: {cfg.get_lake_path('bronze')}")
+print(f"Work path: {cfg.get_work_path('bronze')}")
 ```
 
 ## Sample print_config output
@@ -84,6 +85,10 @@ Example output (values will vary):
          Bronze: data/bronze/sales/orders/order_lines/v1/output/incremental
          Silver: data/silver/sales/orders/order_lines/v1/output/incremental
          Gold: data/gold/sales/orders/order_lines/v1/output/delta
+     📁 Work paths:
+         Bronze: data/bronze/sales/orders/order_lines/v1/work
+         Silver: data/silver/sales/orders/order_lines/v1/work
+         Gold: data/gold/sales/orders/order_lines/v1/work
      Azure:
          Tenant: (empty)
          Subscription: (empty)

@@ -22,6 +22,7 @@ mgr = PipelineParameterManager()
 infra = mgr.prepare_infrastructure()
 cfg = mgr.build_core_config(infra, domain="sales", product="orders", table_name="order_lines")
 print(cfg.get_lake_path("bronze"))
+print(cfg.get_work_path("bronze"))
 ```
 
 Refer to the linked pages for full variable lists, wheel job patterns, and validation examples.
