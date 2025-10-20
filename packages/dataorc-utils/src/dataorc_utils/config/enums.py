@@ -26,6 +26,8 @@ class CoreParam(str, Enum):
     DOMAIN = "domain"  # Business domain  -> Catalog name
     PRODUCT = "product"  # Product/project  -> Database name
     TABLE_NAME = "table_name"  # Table name within the product/database
+
+    # layers
     BRONZE_VERSION = "bronze_version"  # Version for bronze layer
     SILVER_VERSION = "silver_version"  # Version for silver layer
     GOLD_VERSION = "gold_version"  # Version for gold layer
@@ -40,8 +42,6 @@ class CoreParam(str, Enum):
     AZ_CLIENT_ID = "az_client_id"
     AZ_SUBSCRIPTION_ID = "az_subscription_id"
     AZ_KEYVAULT_SCOPE = "az_keyvault_scope"
-    AZ_BLOB_STORAGE_ACCOUNT = "az_blob_storage_account"
-    AZ_DATALAKE_STORAGE_ACCOUNT = "az_datalake_storage_account"
 
 
 # Default values - co-located with their semantic meaning

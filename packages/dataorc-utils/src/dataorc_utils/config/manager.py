@@ -111,10 +111,6 @@ class PipelineParameterManager:
             az_client_id=values.get(CoreParam.AZ_CLIENT_ID, ""),
             az_subscription_id=values.get(CoreParam.AZ_SUBSCRIPTION_ID, ""),
             az_keyvault_scope=values.get(CoreParam.AZ_KEYVAULT_SCOPE, ""),
-            az_blob_storage_account=values.get(CoreParam.AZ_BLOB_STORAGE_ACCOUNT, ""),
-            az_datalake_storage_account=values.get(
-                CoreParam.AZ_DATALAKE_STORAGE_ACCOUNT, ""
-            ),
         )
 
     def build_core_config(
@@ -163,8 +159,6 @@ class PipelineParameterManager:
             az_client_id=infra.az_client_id,
             az_subscription_id=infra.az_subscription_id,
             az_keyvault_scope=infra.az_keyvault_scope,
-            az_blob_storage_account=infra.az_blob_storage_account,
-            az_datalake_storage_account=infra.az_datalake_storage_account,
         )
         config.validate_rules()
         return config

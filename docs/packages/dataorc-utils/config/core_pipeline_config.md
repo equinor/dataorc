@@ -29,7 +29,7 @@ Treat it as read-only. Rebuild instead of mutating.
 | Structure | `domain`, `product`, `table_name` | empty strings |
 | Versions | `bronze_version`, `silver_version`, `gold_version` | `v1` |
 | Processing | `bronze_processing_method`, `silver_processing_method`, `gold_processing_method` | `incremental`, `incremental`, `delta` |
-| Azure infra | `az_tenant_id`, `az_subscription_id`, `az_keyvault_scope`, `az_blob_storage_account`, `az_datalake_storage_account` | empty strings |
+| Azure infra | `az_tenant_id`, `az_subscription_id`, `az_keyvault_scope` | empty strings |
 
 ## Methods
 

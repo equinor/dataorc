@@ -20,15 +20,7 @@ def _generate_infra_names(config: dict, env_name: str, env_config: dict) -> None
     env_suffix = env_config["env_suffix"]
     location = env_config["location"]
 
-    if "storage_prefix" in env_config:
-        config[CoreParam.AZ_BLOB_STORAGE_ACCOUNT] = (
-            f"{env_config['storage_prefix']}{env_suffix}{location}"
-        )
-
     if "datalake_prefix" in env_config:
-        config[CoreParam.AZ_DATALAKE_STORAGE_ACCOUNT] = (
-            f"{env_config['datalake_prefix']}{env_suffix}{location}"
-        )
         config[CoreParam.DATALAKE_NAME] = (
             f"{env_config['datalake_prefix']}{env_suffix}{location}"
         )
@@ -37,13 +29,6 @@ def _generate_infra_names(config: dict, env_name: str, env_config: dict) -> None
         config[CoreParam.AZ_KEYVAULT_SCOPE] = (
             f"{env_config['keyvault_prefix']}-{env_name}-{location}"
         )
-
-
-def _add_api_management_url(config: dict, env_config: dict) -> None:
-    """Add API Management base URL to `config` if both subdomain and domain are present."""
-    # APIM URL handling has been moved to a dedicated library. This helper
-    # remains for backward compatibility but intentionally does nothing.
-    return
 
 
 def _apply_env_overrides(config: dict, env_config: dict) -> None:
@@ -75,9 +60,6 @@ def build_environment_config(
 
     # Populate infra names (storage, datalake, keyvault) when possible
     _generate_infra_names(config, env_name, env_config)
-
-    # Add API Management URL if present
-    _add_api_management_url(config, env_config)
 
     # Apply other environment-specific overrides
     _apply_env_overrides(config, env_config)

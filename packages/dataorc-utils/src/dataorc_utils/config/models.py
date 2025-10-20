@@ -20,8 +20,6 @@ class InfraContext:
     az_client_id: str = ""
     az_subscription_id: str = ""
     az_keyvault_scope: str = ""
-    az_blob_storage_account: str = ""
-    az_datalake_storage_account: str = ""
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,8 +55,6 @@ class CorePipelineConfig:
     az_client_id: str = ""
     az_subscription_id: str = ""
     az_keyvault_scope: str = ""
-    az_blob_storage_account: str = ""
-    az_datalake_storage_account: str = ""
 
     def get_lake_path(
         self,
