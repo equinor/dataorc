@@ -66,32 +66,29 @@ print(f"Work path: {cfg.get_work_path('bronze')}")
 Example output (values will vary):
 
 ```text
-📦 Sales Orders Pipeline
-     Environment: dev
-     Data Lake: mydatalake
-     Container: data
-     🏗️ Structure:
-         Domain: sales
-         Product: orders
-         Table: order_lines
+📦 Pipeline Configuration
+     Environment: test
+     Data Lake: coral-lake-7
+     Container: ingest
+     🏗️ Data Lake Structure:
+         Domain: maritime
+         Product: bathymetry
+         Table: tidegrid
          Bronze Version: v1
-         Silver Version: v1
-         Gold Version: v1
-     ⚙️ Processing:
+         Silver Version: v2
+         Gold Version: v3
+     ⚙️ Processing Methods:
          Bronze: incremental
-         Silver: incremental
+         Silver: snapshot
          Gold: delta
-     📁 Paths:
-         Bronze: data/bronze/sales/orders/order_lines/v1/output/incremental
-         Silver: data/silver/sales/orders/order_lines/v1/output/incremental
-         Gold: data/gold/sales/orders/order_lines/v1/output/delta
+     📁 Generated Paths:
+         Bronze Lake Path: ingest/bronze/maritime/bathymetry/tidegrid/v1/output/incremental
+         Silver Lake Path: ingest/silver/maritime/bathymetry/tidegrid/v2/output/snapshot
+         Gold Lake Path: ingest/gold/maritime/bathymetry/tidegrid/v3/output/delta
      📁 Work paths:
-         Bronze: data/bronze/sales/orders/order_lines/v1/work
-         Silver: data/silver/sales/orders/order_lines/v1/work
-         Gold: data/gold/sales/orders/order_lines/v1/work
-     Azure:
-         Tenant: (empty)
-         Subscription: (empty)
-        KeyVault Scope: (empty)
-    ```
+         Bronze: ingest/bronze/maritime/bathymetry/tidegrid/v1/work
+         Silver: ingest/silver/maritime/bathymetry/tidegrid/v2/work
+         Gold: ingest/gold/maritime/bathymetry/tidegrid/v3/work
+     KeyVault Scope: kv-maritime-test
+```
 
