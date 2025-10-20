@@ -60,3 +60,4 @@ nav:
           - CorePipelineConfig: packages/dataorc-utils/config/core_pipeline_config.md
           - PipelineParameterManager: packages/dataorc-utils/config/pipeline_parameter_manager.md
           - Defaults and validation: packages/dataorc-utils/config/defaults_and_validation.md
+  - Changelog: changelog/index.md
