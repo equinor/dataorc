@@ -84,8 +84,8 @@ class CorePipelineConfig:
         product = product_override or self.product
         table_name = table_name_override or self.table_name
 
-        if not all([domain, product]):
-            raise ValueError("domain and product must be set to generate lake path")
+        if not all([domain, product, table_name]):
+            raise ValueError("domain, product and table_name must be set to generate lake path")
 
         # Resolve attribute names directly (e.g. bronze_version, bronze_processing_method)
         v_attr = f"{layer}_version"

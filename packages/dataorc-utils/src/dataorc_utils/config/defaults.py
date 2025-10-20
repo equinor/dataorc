@@ -2,7 +2,6 @@
 Environment configuration builders.
 
 Functions for building complete environment configurations from templates.
-No longer contains global defaults - those moved to enums.Defaults class.
 """
 
 from .enums import CoreParam
