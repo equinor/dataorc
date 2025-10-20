@@ -9,6 +9,7 @@ Built‑in rules:
 Add new rules by appending to `RULES` or passing a custom list to
 `run_rules_checks`.
 """
+
 from __future__ import annotations
 
 import re
