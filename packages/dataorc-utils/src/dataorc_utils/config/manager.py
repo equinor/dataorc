@@ -7,7 +7,7 @@ Cluster environment variables / wheel packaging.
 
 import os
 from enum import Enum
-from typing import Dict, Optional
+from typing import Dict
 
 from .enums import CoreParam, Defaults, Environment
 from .models import CorePipelineConfig, InfraContext
@@ -47,7 +47,6 @@ class PipelineParameterManager:
         self.domain_configs = domain_configs or {}
         self.product_configs = product_configs or {}
         self.custom_params = custom_params or {}
-        self._config_cache: Optional[Dict[str, str]] = None
         self.case_fallback = case_fallback
         self._local_environment = Environment.DEV  # Default for local development
 
@@ -73,9 +72,6 @@ class PipelineParameterManager:
         Returns:
             Dictionary of parameter names to values
         """
-        if self._config_cache:
-            return self._config_cache
-
         # Default to core parameters if none specified
         if param_list is None:
             param_list = list(CoreParam)
@@ -97,7 +93,6 @@ class PipelineParameterManager:
             else:
                 config_dict[param_name] = self._get_default_value(param)
 
-        self._config_cache = config_dict
         return config_dict
 
     def prepare_infrastructure(self) -> InfraContext:
