@@ -96,7 +96,6 @@ def test_validate_rules_pass_custom_version_override():
 
 def test_case_fallback_env_uppercase_resolution(monkeypatch):
     """Primary fallback behavior: uppercase variant is resolved when case_fallback=True."""
-    # Clear any cached/env values for target param
     key_upper = "DATALAKE_NAME"
     key_lower = CoreParam.DATALAKE_NAME.value
     for k in (key_upper, key_lower):
