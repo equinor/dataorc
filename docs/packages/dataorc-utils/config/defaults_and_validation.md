@@ -67,28 +67,28 @@ Example output (values will vary):
 
 ```text
 📦 Pipeline Configuration
-     Environment: test
-     Data Lake: coral-lake-7
-     Container: ingest
-     🏗️ Data Lake Structure:
-         Domain: maritime
-         Product: bathymetry
-         Table: tidegrid
-         Bronze Version: v1
-         Silver Version: v2
-         Gold Version: v3
-     ⚙️ Processing Methods:
-         Bronze: incremental
-         Silver: snapshot
-         Gold: delta
-     📁 Generated Paths:
-         Bronze Lake Path: ingest/bronze/maritime/bathymetry/tidegrid/v1/output/incremental
-         Silver Lake Path: ingest/silver/maritime/bathymetry/tidegrid/v2/output/snapshot
-         Gold Lake Path: ingest/gold/maritime/bathymetry/tidegrid/v3/output/delta
-     📁 Work paths:
-         Bronze: ingest/bronze/maritime/bathymetry/tidegrid/v1/work
-         Silver: ingest/silver/maritime/bathymetry/tidegrid/v2/work
-         Gold: ingest/gold/maritime/bathymetry/tidegrid/v3/work
-     KeyVault Scope: kv-maritime-test
+   Environment: dev
+   Data Lake: mydatalake
+   Container: data
+   🏗️ Data Lake Structure:
+     Domain: sales
+     Product: orders
+     Table: order_lines
+     Bronze Version: v1
+     Silver Version: v1
+     Gold Version: v1
+   ⚙️ Processing Methods:
+     Bronze: incremental
+     Silver: incremental
+     Gold: delta
+   📁 Generated Paths:
+     Bronze Lake Path: data/bronze/sales/orders/order_lines/v1/output/incremental
+     Silver Lake Path: data/silver/sales/orders/order_lines/v1/output/incremental
+     Gold Lake Path: data/gold/sales/orders/order_lines/v1/output/delta
+   📁 Work paths:
+     Bronze: data/bronze/sales/orders/order_lines/v1/work
+     Silver: data/silver/sales/orders/order_lines/v1/work
+     Gold: data/gold/sales/orders/order_lines/v1/work
+   KeyVault Scope: (empty)
 ```
 
