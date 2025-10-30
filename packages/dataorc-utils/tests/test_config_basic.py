@@ -19,8 +19,6 @@ from dataorc_utils.config import (  # noqa: E402
 
 def make_config(**overrides):
     base = dict(
-        datalake_name="dlakeacct",
-        datalake_container_name="raw",
         env=Environment.DEV,
         domain="finance",
         product="forecast",
@@ -31,6 +29,10 @@ def make_config(**overrides):
         bronze_processing_method="incremental",
         silver_processing_method="full",
         gold_processing_method="delta",
+        env_vars={
+            "datalake_name": "dlakeacct",
+            "datalake_container_name": "raw",
+        },
     )
     base.update(overrides)
     return CorePipelineConfig(**base)
@@ -103,8 +105,10 @@ def test_case_fallback_env_uppercase_resolution(monkeypatch):
 
     # On Windows env vars are case-insensitive, but logic path still runs.
     monkeypatch.setenv(key_upper, "LakeAcctFallback")
+    monkeypatch.setenv("DATALAKE_CONTAINER_NAME", "container-fb")
     monkeypatch.setenv("env", Environment.DEV.value)
 
     mgr = PipelineParameterManager(case_fallback=True)
-    infra = mgr.prepare_infrastructure()
-    assert infra.datalake_name == "LakeAcctFallback"
+    infra = mgr.prepare_infrastructure(["datalake_name", "datalake_container_name"])
+    assert infra.variables.get("datalake_name") == "LakeAcctFallback"
+    assert infra.variables.get("datalake_container_name") == "container-fb"

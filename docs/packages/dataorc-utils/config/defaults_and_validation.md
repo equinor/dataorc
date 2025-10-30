@@ -2,9 +2,9 @@
 title: Defaults and validation
 ---
 
-Helper constants and validation utilities for the configuration system.
+Helper constants and validation utilities.
 
-## Defaults class
+## Defaults
 
 Location: `dataorc_utils.config.enums.Defaults`
 
@@ -17,59 +17,21 @@ Defaults.SILVER_PROCESSING_METHOD  # "incremental"
 Defaults.GOLD_PROCESSING_METHOD    # "delta"
 ```
 
-## Printing configuration
+## print_config(config, title="Pipeline Configuration")
 
-`print_config(config: CorePipelineConfig, title: str = "Pipeline Configuration")` prints a formatted summary.
+Prints formatted summary.
 
 ```python
-from dataorc_utils.config.manager import PipelineParameterManager
 from dataorc_utils.config.validation import print_config
-
-mgr = PipelineParameterManager()
-infra = mgr.prepare_infrastructure()
-cfg = mgr.build_core_config(infra, domain="sales", product="orders", table_name="order_lines")
 
 print_config(cfg, title="Sales Orders Pipeline")
 ```
 
-## Rule validation
-
-`CorePipelineConfig.validate_rules()` raises `ValueError` if a rule fails. Called automatically by `PipelineParameterManager.build_core_config()`.
-
-Advanced (rare) usage: You can instantiate `CorePipelineConfig` directly for unit tests, but production code should prefer the `PipelineParameterManager` two-step (`prepare_infrastructure` + `build_core_config`) to ensure consistent defaults and validation.
-
-## Complete validation example
-
-```python
-import os
-from dataorc_utils.config.manager import PipelineParameterManager
-from dataorc_utils.config.validation import print_config
-
-os.environ["DATALAKE_NAME"] = "mydatalake"
-os.environ["DATALAKE_CONTAINER_NAME"] = "data"
-os.environ["ENV"] = "dev"
-os.environ["DOMAIN"] = "sales"
-os.environ["PRODUCT"] = "orders"
-os.environ["TABLE_NAME"] = "order_lines"
-
-mgr = PipelineParameterManager()
-infra = mgr.prepare_infrastructure()
-cfg = mgr.build_core_config(infra, domain="sales", product="orders", table_name="order_lines")
-
-print_config(cfg, title="Validated Pipeline Config")
-print(f"Path: {cfg.get_lake_path('bronze')}")
-print(f"Work path: {cfg.get_work_path('bronze')}")
-```
-
-## Sample print_config output
-
-Example output (values will vary):
+**Sample output:**
 
 ```text
 📦 Pipeline Configuration
    Environment: dev
-   Data Lake: mydatalake
-   Container: data
    🏗️ Data Lake Structure:
      Domain: sales
      Product: orders
@@ -89,6 +51,30 @@ Example output (values will vary):
      Bronze: data/bronze/sales/orders/order_lines/v1/work
      Silver: data/silver/sales/orders/order_lines/v1/work
      Gold: data/gold/sales/orders/order_lines/v1/work
-   KeyVault Scope: (empty)
+   🔧 Infrastructure Variables:
+     datalake_container_name: data
+     datalake_name: mydatalake
+```
+
+## validate_rules()
+
+`CorePipelineConfig.validate_rules()` raises `ValueError` if rule fails. Called automatically by `build_core_config()`.
+
+## Example
+
+```python
+import os
+from dataorc_utils.config import PipelineParameterManager
+from dataorc_utils.config.validation import print_config
+
+os.environ["env"] = "dev"
+os.environ["datalake_container_name"] = "data"
+
+mgr = PipelineParameterManager()
+infra = mgr.prepare_infrastructure(["datalake_container_name"])
+cfg = mgr.build_core_config(infra, domain="sales", product="orders", table_name="order_lines")
+
+print_config(cfg)
+print(cfg.get_lake_path("bronze"))
 ```
 

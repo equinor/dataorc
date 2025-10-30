@@ -39,8 +39,6 @@ def version_format_rule(config: "CorePipelineConfig", layer: str) -> bool:
     that exact version token (defensive consistency check).
     """
     attr = f"{layer}_version"
-    if not hasattr(config, attr):  # defensive: unknown layer
-        return True
     value = getattr(config, attr)
     if not isinstance(value, str) or not _VERSION_PATTERN.match(value):
         raise ValueError(

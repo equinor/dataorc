@@ -1,6 +1,6 @@
 """Core configuration data classes."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from .enums import Defaults, Environment
 
@@ -11,15 +11,14 @@ class InfraContext:
 
     Stable across multiple pipeline jobs; excludes dataset identifiers and
     per-layer version/processing configuration.
+    
+    The `variables` dict holds all infrastructure environment variables
+    (e.g., datalake_name, datalake_container_name, Azure tenant/client IDs, etc.)
+    that were requested when calling prepare_infrastructure().
     """
 
-    datalake_name: str
-    datalake_container_name: str
     env: Environment
-    az_tenant_id: str = ""
-    az_client_id: str = ""
-    az_subscription_id: str = ""
-    az_keyvault_scope: str = ""
+    variables: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)
@@ -28,11 +27,13 @@ class CorePipelineConfig:
 
     Path pattern: container/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
     Construct via PipelineParameterManager.build_core_config() in production code.
+    
+    The `env_vars` dict holds infrastructure environment variables
+    (e.g., datalake_name, datalake_container_name, Azure IDs, etc.) captured during
+    prepare_infrastructure().
     """
 
     # Required
-    datalake_name: str
-    datalake_container_name: str
     env: Environment
 
     # Structure identifiers
@@ -50,11 +51,8 @@ class CorePipelineConfig:
     silver_processing_method: str = Defaults.SILVER_PROCESSING_METHOD
     gold_processing_method: str = Defaults.GOLD_PROCESSING_METHOD
 
-    # Azure infra
-    az_tenant_id: str = ""
-    az_client_id: str = ""
-    az_subscription_id: str = ""
-    az_keyvault_scope: str = ""
+    # Flexible infrastructure variables (datalake_name, container, Azure IDs, etc.)
+    env_vars: dict[str, str] = field(default_factory=dict)
     # Convenience properties that return the canonical lake path for each layer.
 
     def get_lake_path(
@@ -83,10 +81,11 @@ class CorePipelineConfig:
         domain = domain_override or self.domain
         product = product_override or self.product
         table_name = table_name_override or self.table_name
+        container = self.env_vars.get("datalake_container_name", "")
 
-        if not all([domain, product, table_name]):
+        if not all([container, domain, product, table_name]):
             raise ValueError(
-                "domain, product and table_name must be set to generate lake path"
+                "datalake_container_name, domain, product and table_name must be set to generate lake path"
             )
 
         # Resolve attribute names directly (e.g. bronze_version, bronze_processing_method)
@@ -98,7 +97,7 @@ class CorePipelineConfig:
             self, p_attr, Defaults.BRONZE_PROCESSING_METHOD
         )
 
-        return f"{self.datalake_container_name}/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}"
+        return f"{container}/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}"
 
     def get_work_path(
         self,

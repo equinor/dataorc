@@ -14,12 +14,11 @@ def print_config(
     env_value = config.env.value if hasattr(config.env, "value") else str(config.env)
 
     print(f"   Environment: {env_value}")
-    print(f"   Data Lake: {config.datalake_name}")
-    print(f"   Container: {config.datalake_container_name}")
 
     print("   🏗️ Data Lake Structure:")
     print(f"     Domain: {config.domain}")
     print(f"     Product: {config.product}")
+    print(f"     Table: {config.table_name}")
     print(f"     Bronze Version: {config.bronze_version}")
     print(f"     Silver Version: {config.silver_version}")
     print(f"     Gold Version: {config.gold_version}")
@@ -30,13 +29,21 @@ def print_config(
     print(f"     Gold: {config.gold_processing_method}")
 
     # Only show generated lake paths if structure is complete
-    if all([config.domain, config.product]):
+    if all([config.domain, config.product, config.table_name]):
         print("   📁 Generated Paths:")
         print(f"     Bronze Lake Path: {config.get_lake_path('bronze')}")
         print(f"     Silver Lake Path: {config.get_lake_path('silver')}")
         print(f"     Gold Lake Path: {config.get_lake_path('gold')}")
+        print("   📁 Work paths:")
+        print(f"     Bronze: {config.get_work_path('bronze')}")
+        print(f"     Silver: {config.get_work_path('silver')}")
+        print(f"     Gold: {config.get_work_path('gold')}")
     else:
         print("   ⚠️  Data Lake Structure incomplete - paths not generated")
-    # Azure infrastructure
-    if hasattr(config, "az_keyvault_scope") and config.az_keyvault_scope:
-        print(f"   KeyVault Scope: {config.az_keyvault_scope}")
+
+    # Infrastructure variables
+    if config.env_vars:
+        print("   🔧 Infrastructure Variables:")
+        for key, value in sorted(config.env_vars.items()):
+            display_value = value if value else "(empty)"
+            print(f"     {key}: {display_value}")

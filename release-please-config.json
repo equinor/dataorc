@@ -5,6 +5,9 @@
   "packages": {
     ".": {
       "package-name": "dataorc"
+    },
+    "packages/dataorc-utils": {
+      "package-name": "dataorc-utils"
     }
   }
 }

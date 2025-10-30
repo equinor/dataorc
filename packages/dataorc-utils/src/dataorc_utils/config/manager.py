@@ -6,8 +6,6 @@ Cluster environment variables / wheel packaging.
 """
 
 import os
-from enum import Enum
-from typing import Dict
 
 from .enums import CoreParam, Defaults, Environment
 from .models import CorePipelineConfig, InfraContext
@@ -25,10 +23,8 @@ class PipelineParameterManager:
     def __init__(
         self,
         environments_config: dict = None,
-        repository_defaults: dict = None,
         domain_configs: dict = None,
         product_configs: dict = None,
-        custom_params: Dict[Enum, str] = None,
         case_fallback: bool = False,
     ):
         """
@@ -36,17 +32,13 @@ class PipelineParameterManager:
 
         Args:
             environments_config: Dictionary of environment configurations
-            repository_defaults: Dictionary of repository-specific defaults
             domain_configs: Dictionary of domain configurations
             product_configs: Dictionary of product configurations
-            custom_params: Additional custom parameters specific to pipeline type
         """
         # Wheel-based packaging for configuration delivery.
         self.environments_config = environments_config or {}
-        self.repository_defaults = repository_defaults or {}
         self.domain_configs = domain_configs or {}
         self.product_configs = product_configs or {}
-        self.custom_params = custom_params or {}
         self.case_fallback = case_fallback
         self._local_environment = Environment.DEV  # Default for local development
 
@@ -62,50 +54,78 @@ class PipelineParameterManager:
         }
         return defaults_map.get(param, "")
 
-    def get_parameter_values(self, param_list: list = None) -> Dict[str, str]:
+    def get_env_variables(
+        self, var_names: list[str], required: bool = False
+    ) -> dict[str, str]:
         """
-        Get parameter values from environment variables.
+        Retrieve environment variables by name.
 
         Args:
-            param_list: List of parameter enums to retrieve. If None, gets all core params.
+            var_names: List of environment variable names to retrieve
+            required: If True, raises ValueError when a variable is missing
 
         Returns:
-            Dictionary of parameter names to values
+            Dictionary mapping variable names to their values (empty string for missing vars)
+
+        Raises:
+            ValueError: If required=True and any variable is not set
         """
-        # Default to core parameters if none specified
-        if param_list is None:
-            param_list = list(CoreParam)
+        result = {}
+        missing = []
 
-        config_dict: Dict[str, str] = {}
-        for param in param_list:
-            param_name = param.value if hasattr(param, "value") else str(param)
-
+        for var_name in var_names:
             # Lookup strategy: exact first. If case_fallback enabled, try UPPER then lower.
-            env_value = os.getenv(param_name)
+            env_value = os.getenv(var_name)
             if env_value is None and self.case_fallback:
-                if param_name.upper() != param_name:
-                    env_value = os.getenv(param_name.upper())
-                if env_value is None and param_name.lower() != param_name:
-                    env_value = os.getenv(param_name.lower())
+                if var_name.upper() != var_name:
+                    env_value = os.getenv(var_name.upper())
+                if env_value is None and var_name.lower() != var_name:
+                    env_value = os.getenv(var_name.lower())
 
             if env_value is not None:
-                config_dict[param_name] = env_value
+                result[var_name] = env_value
             else:
-                config_dict[param_name] = self._get_default_value(param)
+                if required:
+                    missing.append(var_name)
+                else:
+                    result[var_name] = ""
 
-        return config_dict
+        if missing:
+            raise ValueError(
+                f"Required environment variables not set: {', '.join(missing)}"
+            )
 
-    def prepare_infrastructure(self) -> InfraContext:
-        """Read and return infrastructure context (no dataset identifiers)."""
-        values = self.get_parameter_values()
+        return result
+
+    def prepare_infrastructure(self, env_vars: list[str]) -> InfraContext:
+        """Read and return infrastructure context (no dataset identifiers).
+
+        Args:
+            env_vars: List of infrastructure environment variable names to capture
+                (e.g., ["datalake_name", "datalake_container_name", "az_tenant_id"]).
+                These will be stored in InfraContext.variables.
+
+        Returns:
+            InfraContext with env and requested infrastructure variables
+
+        Raises:
+            ValueError: If the ENV environment variable is not set in environment
+        """
+        # Get the environment (always required)
+        env_value = os.getenv(CoreParam.ENV.value)
+        if not env_value:
+            raise ValueError(
+                f"Required environment variable '{CoreParam.ENV.value}' is not set"
+            )
+
+        env = Environment(env_value)
+
+        # Capture infrastructure variables
+        infra_vars = self.get_env_variables(env_vars, required=False)
+
         return InfraContext(
-            datalake_name=values.get(CoreParam.DATALAKE_NAME, ""),
-            datalake_container_name=values.get(CoreParam.DATALAKE_CONTAINER_NAME, ""),
-            env=Environment(values.get(CoreParam.ENV, Environment.DEV.value)),
-            az_tenant_id=values.get(CoreParam.AZ_TENANT_ID, ""),
-            az_client_id=values.get(CoreParam.AZ_CLIENT_ID, ""),
-            az_subscription_id=values.get(CoreParam.AZ_SUBSCRIPTION_ID, ""),
-            az_keyvault_scope=values.get(CoreParam.AZ_KEYVAULT_SCOPE, ""),
+            env=env,
+            variables=infra_vars,
         )
 
     def build_core_config(
@@ -138,8 +158,6 @@ class PipelineParameterManager:
         )
 
         config = CorePipelineConfig(
-            datalake_name=infra.datalake_name,
-            datalake_container_name=infra.datalake_container_name,
             env=infra.env,
             domain=domain,
             product=product,
@@ -150,10 +168,7 @@ class PipelineParameterManager:
             bronze_processing_method=bpm,
             silver_processing_method=spm,
             gold_processing_method=gpm,
-            az_tenant_id=infra.az_tenant_id,
-            az_client_id=infra.az_client_id,
-            az_subscription_id=infra.az_subscription_id,
-            az_keyvault_scope=infra.az_keyvault_scope,
+            env_vars=infra.variables,
         )
         config.validate_rules()
         return config

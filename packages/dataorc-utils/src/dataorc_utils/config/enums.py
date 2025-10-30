@@ -37,12 +37,6 @@ class CoreParam(str, Enum):
     SILVER_PROCESSING_METHOD = "silver_processing_method"  # incremental, full, delta
     GOLD_PROCESSING_METHOD = "gold_processing_method"  # incremental, full, delta
 
-    # Azure infrastructure (generalizable across pipelines)
-    AZ_TENANT_ID = "az_tenant_id"
-    AZ_CLIENT_ID = "az_client_id"
-    AZ_SUBSCRIPTION_ID = "az_subscription_id"
-    AZ_KEYVAULT_SCOPE = "az_keyvault_scope"
-
 
 # Default values - co-located with their semantic meaning
 class Defaults:
