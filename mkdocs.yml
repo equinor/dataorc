@@ -46,8 +46,21 @@ markdown_extensions:
   # Enable the Snippets extension to add the ability to embed content from
   # external files.
   # Ref: https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown-extensions/#snippets
+  - pymdownx.highlight:
+      anchor_linenums: true
+      linenums_style: table
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
   - pymdownx.snippets
 
 nav:
   - Home: index.md
+  - User guide:
+    - Packages:
+      - dataorc-utils:
+        - Config:
+          - Overview: packages/dataorc-utils/config/index.md
+          - CorePipelineConfig: packages/dataorc-utils/config/core_pipeline_config.md
+          - PipelineParameterManager: packages/dataorc-utils/config/pipeline_parameter_manager.md
+          - Defaults and validation: packages/dataorc-utils/config/defaults_and_validation.md
   - Changelog: changelog/index.md
