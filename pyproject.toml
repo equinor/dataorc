@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "dataorc"
 version = "0.1.1"
-description = "Metapackage installing all other modules in dataorc family"
+description = "Metapackage installing all other packages in dataorc family"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
