@@ -11,7 +11,7 @@ class InfraContext:
 
     Stable across multiple pipeline jobs; excludes dataset identifiers and
     per-layer version/processing configuration.
-    
+
     The `variables` dict holds all infrastructure environment variables
     (e.g., datalake_name, datalake_container_name, Azure tenant/client IDs, etc.)
     that were requested when calling prepare_infrastructure().
@@ -27,7 +27,7 @@ class CorePipelineConfig:
 
     Path pattern: container/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
     Construct via PipelineParameterManager.build_core_config() in production code.
-    
+
     The `env_vars` dict holds infrastructure environment variables
     (e.g., datalake_name, datalake_container_name, Azure IDs, etc.) captured during
     prepare_infrastructure().
