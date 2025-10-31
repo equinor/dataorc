@@ -7,3 +7,4 @@ The CHANGELOG.md file already contains a top-level heading.
 <!-- markdownlint-disable MD041 -->
 
 --8<-- "CHANGELOG.md"
+
