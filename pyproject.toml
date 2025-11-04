@@ -12,7 +12,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 
 dependencies = [
-    "dataorc-utils",
+    "dataorc-utils==0.1.0",
 ]
 
 [tool.uv.sources]
