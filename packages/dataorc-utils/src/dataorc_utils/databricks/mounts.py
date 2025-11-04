@@ -25,6 +25,7 @@ Example:
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 
 try:  # Import guarded for non-Databricks local environments.
@@ -104,6 +105,9 @@ def ensure_mount(
     """
     if dbutils is None:  # pragma: no cover
         raise RuntimeError("dbutils is not available. Run inside Databricks.")
+
+    logger = logging.getLogger(__name__)
+
     oauth_cfg = _get_oauth_config(
         tenant_id, secret_scope, client_id_key, client_secret_key
     )
@@ -112,15 +116,20 @@ def ensure_mount(
 
     if _is_mounted(mount_point):
         if update_if_exists:
-            print(f"Updating mount at {mount_point} -> {source}")
+            logger.info("Updating mount at %s -> %s", mount_point, source)
             dbutils.fs.updateMount(
                 source=source, mount_point=mount_point, extra_configs=configs
             )
         else:
-            print(f"Mount point {mount_point} already exists; skipping update.")
+            logger.info("Mount point %s already exists; skipping update.", mount_point)
     else:
-        print(f"Mounting {source} at {mount_point}")
+        logger.info("Mounting %s at %s", source, mount_point)
         dbutils.fs.mount(source=source, mount_point=mount_point, extra_configs=configs)
 
-    # Simple verification listing the mount root
-    dbutils.fs.ls(mount_point)
+    # Simple verification listing the mount root; return True if verification succeeded
+    try:
+        dbutils.fs.ls(mount_point)
+        return True
+    except Exception as exc:  # pragma: no cover - Databricks runtime errors
+        logger.warning("Verification of mount %s failed: %s", mount_point, exc)
+        return False
