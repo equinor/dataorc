@@ -22,6 +22,7 @@ Example:
     )
 
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -35,6 +36,7 @@ except Exception:  # pragma: no cover
 @dataclass(slots=True)
 class OAuthConfig:
     """Holds client credential settings for ADLS OAuth."""
+
     tenant_id: str
     client_id: str
     client_secret: str
@@ -49,12 +51,18 @@ class OAuthConfig:
         }
 
 
-def _get_oauth_config(tenant_id: str, secret_scope: str, client_id_key: str, client_secret_key: str) -> OAuthConfig:
+def _get_oauth_config(
+    tenant_id: str, secret_scope: str, client_id_key: str, client_secret_key: str
+) -> OAuthConfig:
     if dbutils is None:  # pragma: no cover
-        raise RuntimeError("dbutils is not available. This module must run inside a Databricks notebook/cluster.")
+        raise RuntimeError(
+            "dbutils is not available. This module must run inside a Databricks notebook/cluster."
+        )
     client_id = dbutils.secrets.get(scope=secret_scope, key=client_id_key)
     client_secret = dbutils.secrets.get(scope=secret_scope, key=client_secret_key)
-    return OAuthConfig(tenant_id=tenant_id, client_id=client_id, client_secret=client_secret)
+    return OAuthConfig(
+        tenant_id=tenant_id, client_id=client_id, client_secret=client_secret
+    )
 
 
 def _build_abfss_uri(container_name: str, datalake_name: str) -> str:
@@ -96,14 +104,18 @@ def ensure_mount(
     """
     if dbutils is None:  # pragma: no cover
         raise RuntimeError("dbutils is not available. Run inside Databricks.")
-    oauth_cfg = _get_oauth_config(tenant_id, secret_scope, client_id_key, client_secret_key)
+    oauth_cfg = _get_oauth_config(
+        tenant_id, secret_scope, client_id_key, client_secret_key
+    )
     configs = oauth_cfg.to_dict()
     source = _build_abfss_uri(container_name, datalake_name)
 
     if _is_mounted(mount_point):
         if update_if_exists:
             print(f"Updating mount at {mount_point} -> {source}")
-            dbutils.fs.updateMount(source=source, mount_point=mount_point, extra_configs=configs)
+            dbutils.fs.updateMount(
+                source=source, mount_point=mount_point, extra_configs=configs
+            )
         else:
             print(f"Mount point {mount_point} already exists; skipping update.")
     else:
@@ -112,11 +124,3 @@ def ensure_mount(
 
     # Simple verification listing the mount root
     dbutils.fs.ls(mount_point)
-
-
-
-
-
-
-
-
