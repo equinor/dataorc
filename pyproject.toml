@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
 
 [project]
 name = "dataorc"
@@ -18,5 +18,5 @@ dependencies = [
     "dataorc-utils",
 ]
 
-[tool.hatch.build.targets.wheel]
-packages = []
+[tool.uv.sources]
+dataorc-utils = { path = "packages/dataorc-utils" }
