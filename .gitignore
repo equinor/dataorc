@@ -68,3 +68,4 @@ Thumbs.db
 
 # Docs build output (MkDocs)
 site/
+.databricks
