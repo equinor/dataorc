@@ -14,9 +14,10 @@ __email__ = "toarst@equinor.com"
 # Re-export subpackages / common symbols for convenience.
 # This allows: `from dataorc_utils import config` or
 # `from dataorc_utils.config import CorePipelineConfig`.
-from . import config  # convenient access to the config subpackage
+from . import config, databricks  # convenient access to subpackages
 
 # __all__ defines what gets imported with "from dataorc_utils import *"
 __all__ = [
     "config",
+    "databricks",
 ]
