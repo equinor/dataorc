@@ -1,4 +1,3 @@
-<!-- markdownlint-disable MD041 -->
 # Databricks utilities
 
 This page documents Databricks-specific helpers in `dataorc_utils.databricks`.
