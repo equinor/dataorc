@@ -1,0 +1,8 @@
+version: 2
+
+updates:
+  # Update dependencies in the root "pyproject.toml" file, once a week
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
