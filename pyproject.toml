@@ -15,5 +15,10 @@ dependencies = [
     "dataorc-utils==0.1.0",
 ]
 
+[tool.uv.workspace]
+members = [
+    "packages/dataorc-utils",
+]
+
 [tool.uv.sources]
-dataorc-utils = { path = "packages/dataorc-utils" }
+dataorc-utils = { workspace = true }
