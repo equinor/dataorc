@@ -23,8 +23,8 @@ project_dir="packages/$project_name"
 mkdir --parents "$project_dir"
 cat > "$project_dir/pyproject.toml" <<EOF
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
 
 [project]
 name = "$project_name"

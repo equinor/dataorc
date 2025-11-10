@@ -1,9 +1,17 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
 
 [project]
 name = "dataorc"
 version = "0.1.1"
 license = "MIT"
 license-files = ["LICENSE"]
+
+dependencies = ["dataorc-utils==0.0.0"]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+dataorc-utils = { workspace = true }
