@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/equinor/dataorc/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/equinor/dataorc/actions/workflows/ci.yml)
 
-## Development
+## Developing
 
 We use [uv](https://docs.astral.sh/uv/) to have one synchronous development environment. See [installing uv](https://docs.astral.sh/uv/getting-started/installation/).
 
