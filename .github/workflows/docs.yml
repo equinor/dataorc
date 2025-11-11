@@ -20,9 +20,9 @@ on:
 jobs:
   build:
     name: Build
-    uses: equinor/ops-actions/.github/workflows/mkdocs.yml@v9.26.0
+    uses: equinor/ops-actions/.github/workflows/mkdocs.yml@feat/mkdocs/install-deps-using-requirement-specifier
     with:
-      requirements: docs/requirements.txt
+      requirements: .[docs]
       upload_artifact: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
       git_fetch_depth: 0 # Required by mkdocs-git-revision-date-localized-plugin (listed in requirements file)
     permissions:
