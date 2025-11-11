@@ -20,6 +20,12 @@ uv sync --all-extras
 
 ### Building documentation
 
+Install documentation dependencies:
+
+```console
+uv pip install -r docs/requirements.txt
+```
+
 Build the documentation and run a local development server:
 
 ```console
