@@ -20,11 +20,11 @@ on:
 jobs:
   build:
     name: Build
-    uses: equinor/ops-actions/.github/workflows/mkdocs.yml@v9.26.0
+    uses: equinor/ops-actions/.github/workflows/mkdocs.yml@v9.31.0
     with:
-      requirements: docs/requirements.txt
+      requirements: .[docs]
       upload_artifact: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      git_fetch_depth: 0 # Required by mkdocs-git-revision-date-localized-plugin (listed in requirements file)
+      git_fetch_depth: 0 # Required by MkDocs plugin "mkdocs-git-revision-date-localized-plugin"
     permissions:
       contents: read
 
@@ -32,7 +32,7 @@ jobs:
     name: Deploy
     needs: build
     if: needs.build.outputs.artifact_uploaded == 'true'
-    uses: equinor/ops-actions/.github/workflows/github-pages.yml@v9.26.0
+    uses: equinor/ops-actions/.github/workflows/github-pages.yml@v9.31.0
     with:
       artifact_name: ${{ needs.build.outputs.artifact_name }}
     permissions:

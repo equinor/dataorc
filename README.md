@@ -18,6 +18,16 @@ Sync the development environment:
 uv sync --all-extras
 ```
 
+### Building documentation
+
+Build the documentation and run a local development server:
+
+```console
+uv run mkdocs serve --strict
+```
+
+The documentation will be served locally at <http://127.0.0.1:8000/dataorc/>.
+
 ## Contributing
 
 See [contributing guidelines](CONTRIBUTING.md).
