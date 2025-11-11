@@ -20,7 +20,7 @@ on:
 jobs:
   build:
     name: Build
-    uses: equinor/ops-actions/.github/workflows/mkdocs.yml@feat/mkdocs/install-deps-using-requirement-specifier
+    uses: equinor/ops-actions/.github/workflows/mkdocs.yml@bd371e321d64b952ee377b72e9be2dc14b0cdfee
     with:
       requirements: .[docs]
       upload_artifact: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
