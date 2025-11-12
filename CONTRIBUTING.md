@@ -18,7 +18,7 @@ This document provides guidelines for contributing to the dataorc project.
     - If you've added a feature in the `dataorc-utils` package:
 
         ```plaintext
-        feat(utils): add core pipeline config tool `CorePipelineConfig`
+        feat(utils): add pipeline config tool `CorePipelineConfig`
         ```
 
     - If you've fixed a bug in the `dataorc-utils` package:
