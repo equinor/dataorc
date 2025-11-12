@@ -11,10 +11,33 @@ This document provides guidelines for contributing to the dataorc project.
 1. Create a new branch. For external contributors, create a fork.
 1. Make your changes.
 1. Commit your changes.
-
-    Follow the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/) for semantic commit messages.
-
 1. Create a pull request to merge your changes into branch `main`.
+
+    Follow the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/) for semantic pull request titles, where scope is the package that you've made changes to, for example:
+
+    - If you've added a feature in the `dataorc-utils` package:
+
+        ```plaintext
+        feat(utils): add core pipeline config tool `CorePipelineConfig`
+        ```
+
+    - If you've fixed a bug in the `dataorc-utils` package:
+
+        ```plaintext
+        fix(utils): `CorePipelineConfig` returns incorrect Data Lake path
+        ```
+
+    - If you've updated documentation for the `dataorc-utils` package:
+
+        ```plaintext
+        docs(utils): clarify parameters in `CorePipelineConfig` usage example
+        ```
+
+    - If you've added a feature in the main `dataorc` package:
+
+        ```plaintext
+        feat: install package `dataorc-utils`
+        ```
 
 ## Add new package
 
