@@ -4,7 +4,7 @@
 > This Python library is in an early development phase. Breaking changes may be added frequently.
 
 [![CI](https://github.com/equinor/dataorc/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/equinor/dataorc/actions/workflows/ci.yml)
-![PyPI - Version](https://img.shields.io/pypi/v/dataorc)
+[![PyPI - Version](https://img.shields.io/pypi/v/dataorc)](https://pypi.org/project/dataorc/)
 
 A Python library that simplifies and standardizes data orchestration tasks.
 
