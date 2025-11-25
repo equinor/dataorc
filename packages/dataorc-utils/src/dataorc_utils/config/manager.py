@@ -111,13 +111,13 @@ class PipelineParameterManager:
         Raises:
             ValueError: If the ENV environment variable is not set in environment
         """
-        # Get the environment (always required)
-        env_value = os.getenv(CoreParam.ENV.value)
-        if not env_value:
-            raise ValueError(
-                f"Required environment variable '{CoreParam.ENV.value}' is not set"
-            )
-
+        # Get the environment (always required) using get_env_variables so
+        # case_fallback is applied when requested. Use a different variable
+        # name to avoid shadowing the `env_vars` parameter.
+        env_lookup = self.get_env_variables([CoreParam.ENV.value], required=True)
+        env_value = env_lookup.get(CoreParam.ENV.value) or env_lookup.get(
+            CoreParam.ENV.value.upper()
+        )
         env = Environment(env_value)
 
         # Capture infrastructure variables
