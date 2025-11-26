@@ -65,4 +65,6 @@ nav:
           - Defaults and validation: packages/dataorc-utils/config/defaults_and_validation.md
         - Databricks:
           - Utilities: packages/dataorc-utils/databricks.md
+        - Azure:
+          - Key Vault: packages/dataorc-utils/azure/azure_keyvault.md
   - Changelog: changelog/index.md

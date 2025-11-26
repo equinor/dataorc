@@ -24,6 +24,11 @@ dev = [
     "ruff>=0.8.0",
 ]
 
+azure = [
+    "azure-identity",
+    "azure-keyvault-secrets",
+]
+
 [tool.ruff]
 # Set the maximum line length to 88.
 line-length = 88
