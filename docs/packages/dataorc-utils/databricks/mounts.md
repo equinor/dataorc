@@ -1,12 +1,8 @@
-# Databricks utilities
-
-This page documents Databricks-specific helpers in `dataorc_utils.databricks`.
-
-## Mounting an Azure Data Lake (ADLS Gen2)
+# Mounting an Azure Data Lake (ADLS Gen2)
 
 Use `ensure_mount` to idempotently mount or update an ABFS container into Databricks.
 
-### Function
+## Function
 
 `ensure_mount(container_name, datalake_name, tenant_id, secret_scope, client_id_key, client_secret_key, mount_point='/mnt/datalakestore', update_if_exists=True)`
 
@@ -21,7 +17,7 @@ Parameters:
 - `mount_point` (str, optional): Where to mount in DBFS. Defaults to `/mnt/datalakestore`.
 - `update_if_exists` (bool, optional): If `True`, existing mount is updated with new creds; if `False`, existing mount is left alone.
 
-### Example (Databricks notebook)
+## Example (Databricks notebook)
 
 ```python
 from dataorc_utils.databricks import ensure_mount
@@ -38,6 +34,7 @@ ensure_mount(
 ```
 
 Notes:
+
 - `ensure_mount` reads the client id and secret from the given Databricks secret scope.
 - `ensure_mount` is safe to call on every job start; it will update if necessary and otherwise ensure the mount exists.
 
