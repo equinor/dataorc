@@ -64,7 +64,9 @@ nav:
           - PipelineParameterManager: packages/dataorc-utils/config/pipeline_parameter_manager.md
           - Defaults and validation: packages/dataorc-utils/config/defaults_and_validation.md
         - Databricks:
-          - Utilities: packages/dataorc-utils/databricks.md
+          - Overview: packages/dataorc-utils/databricks/index.md
+          - Mounts: packages/dataorc-utils/databricks/mounts.md
+          - Parameters: packages/dataorc-utils/databricks/parameters.md
         - Azure:
           - Key Vault: packages/dataorc-utils/azure/azure_keyvault.md
   - Changelog: changelog/index.md
