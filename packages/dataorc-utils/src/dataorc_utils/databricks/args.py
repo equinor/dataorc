@@ -6,10 +6,10 @@ in Databricks jobs.
 
 from __future__ import annotations
 
-import argparse
+from argparse import ArgumentParser, Namespace
 
 
-def parse_args(description: str, arguments: list[str]) -> argparse.Namespace:
+def parse_args(description: str, arguments: list[str]) -> Namespace:
     """Parse command-line arguments for a Databricks wheel task.
 
     When running Python wheel tasks in Databricks, job parameters are passed
@@ -30,7 +30,7 @@ def parse_args(description: str, arguments: list[str]) -> argparse.Namespace:
         >>> print(args.database, args.schema)
         mydb public
     """
-    parser = argparse.ArgumentParser(description=description)
+    parser = ArgumentParser(description=description)
 
     for name in arguments:
         parser.add_argument(f"--{name}", type=str, required=True)
