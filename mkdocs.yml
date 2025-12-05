@@ -67,4 +67,6 @@ nav:
           - Overview: packages/dataorc-utils/databricks/index.md
           - Mounts: packages/dataorc-utils/databricks/mounts.md
           - Parameters: packages/dataorc-utils/databricks/parameters.md
+        - Azure:
+          - Key Vault: packages/dataorc-utils/azure/azure_keyvault.md
   - Changelog: changelog/index.md
