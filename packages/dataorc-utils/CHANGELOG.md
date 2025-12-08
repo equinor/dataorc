@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.2.0...dataorc-utils-v0.3.0) (2025-12-08)
+
+
+### Features
+
+* add Azure Key Vault support and documentation ([#42](https://github.com/equinor/dataorc/issues/42)) ([abc42a0](https://github.com/equinor/dataorc/commit/abc42a08ded4dd6635789d346379e9a21dc7e88e))
+
 ## [0.2.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.1.0...dataorc-utils-v0.2.0) (2025-12-04)
 
 
