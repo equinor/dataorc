@@ -1,13 +1,10 @@
-"""Databricks utilities for DataOrc.
+"""Databricks helpers: mounts and argument parsing.
 
-Public API re-exports a small, stable surface for mounting ADLS Gen2 in
-Databricks and parsing wheel-task arguments.
-
-Usage:
-    from dataorc_utils.databricks import ensure_mount, parse_args
+Provide a compact, typed public surface: `ensure_mount`, `OAuthConfig`, `parse_args`.
 """
 
 from .args import parse_args
 from .mounts import OAuthConfig, ensure_mount
 
+# Public API
 __all__ = ["OAuthConfig", "ensure_mount", "parse_args"]

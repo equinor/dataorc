@@ -1,11 +1,13 @@
-"""
-Parameter management for pipeline configuration.
+"""Parameter management for pipeline configuration.
 
 This manager reads configuration from environment variables.
 Cluster environment variables / wheel packaging.
 """
 
+from __future__ import annotations
+
 import os
+from typing import Any, Mapping, Optional
 
 from .enums import CoreParam, Defaults, Environment
 from .models import CorePipelineConfig, InfraContext
@@ -22,11 +24,11 @@ class PipelineParameterManager:
 
     def __init__(
         self,
-        environments_config: dict = None,
-        domain_configs: dict = None,
-        product_configs: dict = None,
+        environments_config: Optional[Mapping[str, Any]] = None,
+        domain_configs: Optional[Mapping[str, Any]] = None,
+        product_configs: Optional[Mapping[str, Any]] = None,
         case_fallback: bool = False,
-    ):
+    ) -> None:
         """
         Initialize parameter manager.
 
@@ -36,9 +38,9 @@ class PipelineParameterManager:
             product_configs: Dictionary of product configurations
         """
         # Wheel-based packaging for configuration delivery.
-        self.environments_config = environments_config or {}
-        self.domain_configs = domain_configs or {}
-        self.product_configs = product_configs or {}
+        self.environments_config: Mapping[str, Any] = environments_config or {}
+        self.domain_configs: Mapping[str, Any] = domain_configs or {}
+        self.product_configs: Mapping[str, Any] = product_configs or {}
         self.case_fallback = case_fallback
         self._local_environment = Environment.DEV  # Default for local development
 
@@ -134,12 +136,12 @@ class PipelineParameterManager:
         domain: str = "",
         product: str = "",
         table_name: str = "",
-        bronze_version: str | None = None,
-        silver_version: str | None = None,
-        gold_version: str | None = None,
-        bronze_processing_method: str | None = None,
-        silver_processing_method: str | None = None,
-        gold_processing_method: str | None = None,
+        bronze_version: Optional[str] = None,
+        silver_version: Optional[str] = None,
+        gold_version: Optional[str] = None,
+        bronze_processing_method: Optional[str] = None,
+        silver_processing_method: Optional[str] = None,
+        gold_processing_method: Optional[str] = None,
     ) -> CorePipelineConfig:
         """Compose a CorePipelineConfig from infra plus pipeline-specific overrides."""
         # Resolve defaults if None supplied

@@ -1,6 +1,7 @@
 """Core configuration data classes."""
 
 from dataclasses import dataclass, field
+from typing import Optional
 
 from .enums import Defaults, Environment
 
@@ -58,11 +59,11 @@ class CorePipelineConfig:
     def get_lake_path(
         self,
         layer: str,
-        processing_method_override: str = None,
-        version_override: str = None,
-        domain_override: str = None,
-        product_override: str = None,
-        table_name_override: str = None,
+        processing_method_override: Optional[str] = None,
+        version_override: Optional[str] = None,
+        domain_override: Optional[str] = None,
+        product_override: Optional[str] = None,
+        table_name_override: Optional[str] = None,
     ) -> str:
         """
             Generate Data Lake path following the standard structure.
@@ -102,10 +103,10 @@ class CorePipelineConfig:
     def get_work_path(
         self,
         layer: str,
-        version_override: str = None,
-        domain_override: str = None,
-        product_override: str = None,
-        table_name_override: str = None,
+        version_override: Optional[str] = None,
+        domain_override: Optional[str] = None,
+        product_override: Optional[str] = None,
+        table_name_override: Optional[str] = None,
     ) -> str:
         """Return the working path for a layer.
 
