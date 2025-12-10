@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.3.0...dataorc-utils-v0.4.0) (2025-12-10)
+
+
+### Features
+
+* **utils:** treat env as plain string and default to "dev" ([#50](https://github.com/equinor/dataorc/issues/50)) ([65473a8](https://github.com/equinor/dataorc/commit/65473a8c66494b4afc95ad4866e9277c4f8cf767))
+
 ## [0.3.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.2.0...dataorc-utils-v0.3.0) (2025-12-08)
 
 
