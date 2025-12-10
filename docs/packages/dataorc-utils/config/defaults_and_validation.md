@@ -67,7 +67,7 @@ import os
 from dataorc_utils.config import PipelineParameterManager
 from dataorc_utils.config.validation import print_config
 
-os.environ["env"] = "dev"
+os.environ["env"] = "dev"  # exact name match; set PipelineParameterManager(case_fallback=True) to allow UPPER/lower fallbacks
 os.environ["datalake_container_name"] = "data"
 
 mgr = PipelineParameterManager()

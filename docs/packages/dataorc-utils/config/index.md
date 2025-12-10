@@ -37,4 +37,6 @@ print(cfg.get_work_path("bronze"))
 # Access infrastructure variables
 datalake = cfg.env_vars["datalake_name"]
 # Or: infra.variables["datalake_name"]
+
+Note: if `env` is not set in the environment, `prepare_infrastructure()` will default it to "dev".
 ```

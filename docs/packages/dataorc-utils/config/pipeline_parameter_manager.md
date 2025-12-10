@@ -10,7 +10,7 @@ Environment-driven config assembly. Reads from environment variables.
 from dataorc_utils.config import PipelineParameterManager
 import os
 
-os.environ["env"] = "dev"
+os.environ["env"] = "dev"  # optional; `env` is a plain string (not an enum); defaults to 'dev' when not set
 os.environ["datalake_name"] = "mydatalake"
 os.environ["datalake_container_name"] = "data"
 
@@ -60,14 +60,24 @@ For most use cases: `PipelineParameterManager()`
 
 ### prepare_infrastructure(env_vars)
 
-Reads `env` (required) and caller-specified variables.
+Reads `env` (optional) and caller-specified variables. `env` is returned as a plain
+string on the resulting `InfraContext`. If `env` is not set in the environment,
+the manager defaults it to "dev".
+
+Missing variables returned by `get_env_variables()` appear in the `variables` dict
+as empty strings unless a default is applied. The lookup strategy is exact-name
+first, and when `case_fallback=True` the manager will attempt uppercase then
+lowercase variants.
+
+Migration note: The previous `Environment` enum was removed — callers must treat
+`env` as a plain `str` (no enum conversion is performed).
 
 **Parameters:**
 - `env_vars` (list[str]) — env var names to capture
 
 **Returns:** `InfraContext` with `env` and `variables` dict
 
-**Raises:** `ValueError` if `env` is missing
+**Raises:** None. `env` defaults to "dev" when not provided.
 
 ```python
 infra = mgr.prepare_infrastructure([
@@ -115,8 +125,8 @@ vars = mgr.get_env_variables(["datalake_name", "custom_var"])
 
 ## Key environment variables
 
-**Always required:**
-- `env` — execution environment (dev, test, prod)
+**Optional:**
+- `env` — execution environment (defaults to "dev"). Can be any string; not limited to a predefined set.
 
 **Infrastructure variables** (specify in `prepare_infrastructure()`):
 - `datalake_name`, `datalake_container_name` — storage info
