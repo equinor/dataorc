@@ -12,14 +12,13 @@ if SRC_ROOT not in sys.path:
 from dataorc_utils.config import (  # noqa: E402
     CoreParam,
     CorePipelineConfig,
-    Environment,
     PipelineParameterManager,
 )
 
 
 def make_config(**overrides):
     base = dict(
-        env=Environment.DEV,
+        env="dev",
         domain="finance",
         product="forecast",
         table_name="positions",
@@ -106,7 +105,7 @@ def test_case_fallback_env_uppercase_resolution(monkeypatch):
     # On Windows env vars are case-insensitive, but logic path still runs.
     monkeypatch.setenv(key_upper, "LakeAcctFallback")
     monkeypatch.setenv("DATALAKE_CONTAINER_NAME", "container-fb")
-    monkeypatch.setenv("env", Environment.DEV.value)
+    monkeypatch.setenv("env", "dev")
 
     mgr = PipelineParameterManager(case_fallback=True)
     infra = mgr.prepare_infrastructure(["datalake_name", "datalake_container_name"])

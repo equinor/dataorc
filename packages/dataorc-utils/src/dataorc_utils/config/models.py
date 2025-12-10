@@ -3,7 +3,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from .enums import Defaults, Environment
+from .enums import Defaults
 
 
 @dataclass
@@ -18,7 +18,7 @@ class InfraContext:
     that were requested when calling prepare_infrastructure().
     """
 
-    env: Environment
+    env: str
     variables: dict[str, str] = field(default_factory=dict)
 
 
@@ -35,7 +35,7 @@ class CorePipelineConfig:
     """
 
     # Required
-    env: Environment
+    env: str
 
     # Structure identifiers
     domain: str = ""

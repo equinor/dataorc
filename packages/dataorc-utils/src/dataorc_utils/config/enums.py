@@ -5,14 +5,6 @@ Core parameter definitions and enums.
 from enum import Enum
 
 
-class Environment(str, Enum):
-    """Pipeline execution environments."""
-
-    DEV = "dev"
-    TEST = "test"
-    PROD = "prod"
-
-
 class CoreParam(str, Enum):
     """Core parameters used across all pipelines."""
 

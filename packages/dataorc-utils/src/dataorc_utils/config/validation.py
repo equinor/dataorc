@@ -10,10 +10,8 @@ def print_config(
 ) -> None:
     """Print configuration for debugging."""
     print(f"📦 {title}:")
-    # Handle both string and enum types
-    env_value = config.env.value if hasattr(config.env, "value") else str(config.env)
-
-    print(f"   Environment: {env_value}")
+    # `env` is a plain string in the current design
+    print(f"   Environment: {config.env}")
 
     print("   🏗️ Data Lake Structure:")
     print(f"     Domain: {config.domain}")

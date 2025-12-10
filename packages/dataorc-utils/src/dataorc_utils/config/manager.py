@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 from typing import Any, Mapping, Optional
 
-from .enums import CoreParam, Defaults, Environment
+from .enums import CoreParam, Defaults
 from .models import CorePipelineConfig, InfraContext
 
 
@@ -42,7 +42,7 @@ class PipelineParameterManager:
         self.domain_configs: Mapping[str, Any] = domain_configs or {}
         self.product_configs: Mapping[str, Any] = product_configs or {}
         self.case_fallback = case_fallback
-        self._local_environment = Environment.DEV  # Default for local development
+        self._local_environment = "dev"  # Default for local development
 
     def _get_default_value(self, param: CoreParam) -> str:
         """Get default value for a core parameter."""
@@ -113,22 +113,16 @@ class PipelineParameterManager:
         Raises:
             ValueError: If the ENV environment variable is not set in environment
         """
-        # Get the environment (always required)
-        env_value = os.getenv(CoreParam.ENV.value)
-        if not env_value:
-            raise ValueError(
-                f"Required environment variable '{CoreParam.ENV.value}' is not set"
-            )
-
-        env = Environment(env_value)
-
-        # Capture infrastructure variables
-        infra_vars = self.get_env_variables(env_vars, required=False)
-
-        return InfraContext(
-            env=env,
-            variables=infra_vars,
+        # Capture infrastructure variables (including ENV) using the manager lookup
+        infra_vars = self.get_env_variables(
+            [CoreParam.ENV.value] + env_vars, required=False
         )
+
+        # Ensure ENV is present in infra_vars, defaulting to the manager local default
+        if not infra_vars.get(CoreParam.ENV.value):
+            infra_vars[CoreParam.ENV.value] = self._local_environment
+
+        return InfraContext(env=infra_vars[CoreParam.ENV.value], variables=infra_vars)
 
     def build_core_config(
         self,

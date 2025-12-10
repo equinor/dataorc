@@ -14,13 +14,15 @@ Immutable configuration snapshot built via `PipelineParameterManager`.
 
 | Group | Fields | Defaults |
 |-------|--------|----------|
-| Required | `env` | must be set |
+| Required | `env` | string; defaults to "dev" when not provided |
 | Structure | `domain`, `product`, `table_name` | empty strings |
 | Versions | `bronze_version`, `silver_version`, `gold_version` | `v1` |
 | Processing | `bronze_processing_method`, `silver_processing_method`, `gold_processing_method` | `incremental`, `incremental`, `delta` |
 | Infrastructure | `env_vars` (dict) | empty dict |
 
 **Infrastructure variables** (specified in `prepare_infrastructure()`): `datalake_name`, `datalake_container_name`, Azure IDs, etc.
+
+**Note:** the environment key used by the manager is `env` by default. Lookup follows the `PipelineParameterManager` `case_fallback` setting (exact name first, then uppercase/lowercase fallbacks if enabled). When `env` is not set in the environment, it defaults to `"dev"`.
 
 **Accessing infrastructure variables:**
 ```python
