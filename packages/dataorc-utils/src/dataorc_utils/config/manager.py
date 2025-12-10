@@ -114,7 +114,9 @@ class PipelineParameterManager:
             ValueError: If the ENV environment variable is not set in environment
         """
         # Capture infrastructure variables (including ENV) using the manager lookup
-        infra_vars = self.get_env_variables([CoreParam.ENV.value] + env_vars, required=False)
+        infra_vars = self.get_env_variables(
+            [CoreParam.ENV.value] + env_vars, required=False
+        )
 
         # Ensure ENV is present in infra_vars, defaulting to the manager local default
         if not infra_vars.get(CoreParam.ENV.value):
