@@ -97,7 +97,7 @@ def ensure_mount(
     client_secret_key: str,
     mount_point: str = "/mnt/datalakestore",
     update_if_exists: bool = True,
-) -> None:
+) -> bool:
     """Mount or update a Databricks mount point for an ADLS Gen2 container.
 
     If the mount exists and `update_if_exists` is True, `dbutils.fs.updateMount` is used.
