@@ -8,7 +8,7 @@ version = "0.1.1"
 license = "MIT"
 license-files = ["LICENSE"]
 
-dependencies = ["dataorc-utils==0.2.0"]
+dependencies = ["dataorc-utils==0.4.0"]
 
 [project.optional-dependencies]
 docs = [
