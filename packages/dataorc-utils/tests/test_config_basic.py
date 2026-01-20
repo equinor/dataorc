@@ -88,6 +88,24 @@ def test_validate_rules_fail_bad_version_pattern():
     assert "pattern" in str(exc.value).lower() or "v<integer>" in str(exc.value)
 
 
+def test_validate_rules_pass_revision_format():
+    cfg = make_config(bronze_version="v1r2", silver_version="v10r0", gold_version="v3")
+    # Should not raise
+    assert cfg.validate_rules() is True
+
+
+def test_validate_rules_fail_bad_revision_pattern():
+    # revision must be numeric when present
+    cfg = make_config(bronze_version="v1rX")
+    with pytest.raises(ValueError) as exc:
+        cfg.validate_rules()
+    assert (
+        "pattern" in str(exc.value).lower()
+        or "v<integer>" in str(exc.value)
+        or "revision" in str(exc.value).lower()
+    )
+
+
 def test_validate_rules_pass_custom_version_override():
     # Overrides should not break rule when format is correct
     cfg = make_config()
