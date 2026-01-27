@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.4.0...dataorc-utils-v0.5.0) (2026-01-27)
+
+
+### Features
+
+* introduce dictionary functionality for environment variables access ([#57](https://github.com/equinor/dataorc/issues/57)) ([b6291fa](https://github.com/equinor/dataorc/commit/b6291fa98e7ea6712e6eb7089482a98963452686))
+
 ## [0.4.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.3.0...dataorc-utils-v0.4.0) (2025-12-10)
 
 
