@@ -92,7 +92,9 @@ class CorePipelineConfig:
         container = self.env_vars.get("datalake_container_name", "")
 
         if not container:
-            raise ValueError("datalake_container_name must be set to generate lake path")
+            raise ValueError(
+                "datalake_container_name must be set to generate lake path"
+            )
 
         segments_path = "/".join(segments)
 
@@ -105,7 +107,9 @@ class CorePipelineConfig:
             self, p_attr, Defaults.BRONZE_PROCESSING_METHOD
         )
 
-        return f"{container}/{layer}/{segments_path}/{version}/output/{processing_method}"
+        return (
+            f"{container}/{layer}/{segments_path}/{version}/output/{processing_method}"
+        )
 
     def get_work_path(
         self,

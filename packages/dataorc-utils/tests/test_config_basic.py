@@ -114,4 +114,6 @@ def test_case_fallback_env_uppercase_resolution(monkeypatch):
 def test_work_path():
     """Test that work path is generated correctly."""
     cfg = make_config()
-    assert cfg.get_work_path("bronze") == "raw/bronze/finance/forecast/positions/v1/work"
+    assert (
+        cfg.get_work_path("bronze") == "raw/bronze/finance/forecast/positions/v1/work"
+    )
