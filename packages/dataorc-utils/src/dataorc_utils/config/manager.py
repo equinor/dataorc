@@ -135,7 +135,6 @@ class PipelineParameterManager:
         Args:
             infra: Infrastructure context from prepare_infrastructure()
             path_segments: Flexible path segments for lake path - required, at least one
-                (e.g., ("orders",) or ("domain", "product", "table"))
             bronze_version: Version for bronze layer (default: v1)
             silver_version: Version for silver layer (default: v1)
             gold_version: Version for gold layer (default: v1)

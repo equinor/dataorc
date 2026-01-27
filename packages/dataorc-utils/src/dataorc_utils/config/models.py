@@ -33,16 +33,13 @@ class CorePipelineConfig:
     (e.g., datalake_name, datalake_container_name, Azure IDs, etc.) captured during
     prepare_infrastructure().
 
-    The `path_segments` tuple allows flexible naming hierarchy. Users can provide
-    1-N segments depending on their organizational needs (e.g., just "orders" or
-    "finance/forecast/positions").
+    The `path_segments` tuple allows flexible naming hierarchy. 1-N segments.
     """
 
     # Required
     env: str
 
-    # Flexible path segments - replaces fixed domain/product/table_name
-    # At least one segment is required
+    # Flexible path segments for lake path
     path_segments: tuple[str, ...]
 
     # Layer versions

@@ -31,11 +31,6 @@ cfg = mgr.build_core_config(
 print(cfg.get_lake_path("bronze"))
 # -> data/bronze/sales/orders/order_lines/v1/output/incremental
 
-# Single segment also works
-cfg_simple = mgr.build_core_config(infra, path_segments=("orders",))
-print(cfg_simple.get_lake_path("bronze"))
-# -> data/bronze/orders/v1/output/incremental
-
 # Access infrastructure variables
 datalake = cfg.env_vars["datalake_name"]
 container = cfg.env_vars["datalake_container_name"]
@@ -106,12 +101,6 @@ cfg = mgr.build_core_config(
     infra,
     path_segments=("sales", "orders", "order_lines"),
     bronze_version="v2",
-)
-
-# Single segment
-cfg_simple = mgr.build_core_config(
-    infra,
-    path_segments=("orders",),
 )
 ```
 

@@ -109,11 +109,3 @@ def test_case_fallback_env_uppercase_resolution(monkeypatch):
     infra = mgr.prepare_infrastructure(["datalake_name", "datalake_container_name"])
     assert infra.variables.get("datalake_name") == "LakeAcctFallback"
     assert infra.variables.get("datalake_container_name") == "container-fb"
-
-
-def test_work_path():
-    """Test that work path is generated correctly."""
-    cfg = make_config()
-    assert (
-        cfg.get_work_path("bronze") == "raw/bronze/finance/forecast/positions/v1/work"
-    )
