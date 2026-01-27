@@ -18,6 +18,25 @@ val = get_keyvault_secret(
 print(val)
 ```
 
+### Retry and caching behavior
+
+The function includes built-in resilience for parallel execution scenarios:
+
+- **Credential caching**: Credentials and clients are cached at module level to reduce token acquisition overhead
+- **Retry with exponential backoff**: Transient failures are retried up to 3 times by default
+- **Automatic credential refresh**: On authentication errors, the credential cache is cleared and fresh credentials are acquired
+
+You can customize retry behavior:
+
+```python
+val = get_keyvault_secret(
+    vault_url="https://myvault.vault.azure.net/",
+    secret_name="my-secret",
+    max_retries=5,      # Default: 3
+    retry_delay=2.0,    # Default: 1.0 seconds (doubles each retry)
+)
+```
+
 
 Prerequisites:
 
@@ -31,5 +50,5 @@ pip install "dataorc-utils[azure]"
 
 Notes:
 
-- This helper is intentionally minimal: it uses `DefaultAzureCredential` and will raise any Azure SDK exception that occurs when retrieving the secret.
-- For local development authenticate with `az login` or set up environment-based authentication supported by `DefaultAzureCredential`.
+- This helper uses `DefaultAzureCredential` with optimized settings for non-interactive environments
+- For local development authenticate with `az login` or set up environment-based authentication supported by `DefaultAzureCredential`
