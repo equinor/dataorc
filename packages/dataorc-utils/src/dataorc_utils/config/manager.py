@@ -25,8 +25,6 @@ class PipelineParameterManager:
     def __init__(
         self,
         environments_config: Optional[Mapping[str, Any]] = None,
-        domain_configs: Optional[Mapping[str, Any]] = None,
-        product_configs: Optional[Mapping[str, Any]] = None,
         case_fallback: bool = False,
     ) -> None:
         """
@@ -34,13 +32,10 @@ class PipelineParameterManager:
 
         Args:
             environments_config: Dictionary of environment configurations
-            domain_configs: Dictionary of domain configurations
-            product_configs: Dictionary of product configurations
+            case_fallback: If True, tries uppercase/lowercase fallback for env vars
         """
         # Wheel-based packaging for configuration delivery.
         self.environments_config: Mapping[str, Any] = environments_config or {}
-        self.domain_configs: Mapping[str, Any] = domain_configs or {}
-        self.product_configs: Mapping[str, Any] = product_configs or {}
         self.case_fallback = case_fallback
         self._local_environment = "dev"  # Default for local development
 
@@ -127,9 +122,7 @@ class PipelineParameterManager:
     def build_core_config(
         self,
         infra: InfraContext,
-        domain: str = "",
-        product: str = "",
-        table_name: str = "",
+        path_segments: tuple[str, ...],
         bronze_version: Optional[str] = None,
         silver_version: Optional[str] = None,
         gold_version: Optional[str] = None,
@@ -137,7 +130,22 @@ class PipelineParameterManager:
         silver_processing_method: Optional[str] = None,
         gold_processing_method: Optional[str] = None,
     ) -> CorePipelineConfig:
-        """Compose a CorePipelineConfig from infra plus pipeline-specific overrides."""
+        """Compose a CorePipelineConfig from infra plus pipeline-specific overrides.
+
+        Args:
+            infra: Infrastructure context from prepare_infrastructure()
+            path_segments: Flexible path segments for lake path - required, at least one
+                (e.g., ("orders",) or ("domain", "product", "table"))
+            bronze_version: Version for bronze layer (default: v1)
+            silver_version: Version for silver layer (default: v1)
+            gold_version: Version for gold layer (default: v1)
+            bronze_processing_method: Processing method for bronze layer
+            silver_processing_method: Processing method for silver layer
+            gold_processing_method: Processing method for gold layer
+
+        Returns:
+            Immutable CorePipelineConfig instance
+        """
         # Resolve defaults if None supplied
         bv = bronze_version or self._get_default_value(CoreParam.BRONZE_VERSION)
         sv = silver_version or self._get_default_value(CoreParam.SILVER_VERSION)
@@ -155,9 +163,7 @@ class PipelineParameterManager:
 
         config = CorePipelineConfig(
             env=infra.env,
-            domain=domain,
-            product=product,
-            table_name=table_name,
+            path_segments=path_segments,
             bronze_version=bv,
             silver_version=sv,
             gold_version=gv,

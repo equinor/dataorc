@@ -14,9 +14,7 @@ def print_config(
     print(f"   Environment: {config.env}")
 
     print("   🏗️ Data Lake Structure:")
-    print(f"     Domain: {config.domain}")
-    print(f"     Product: {config.product}")
-    print(f"     Table: {config.table_name}")
+    print(f"     Path Segments: {'/'.join(config.path_segments)}")
     print(f"     Bronze Version: {config.bronze_version}")
     print(f"     Silver Version: {config.silver_version}")
     print(f"     Gold Version: {config.gold_version}")
@@ -26,8 +24,8 @@ def print_config(
     print(f"     Silver: {config.silver_processing_method}")
     print(f"     Gold: {config.gold_processing_method}")
 
-    # Only show generated lake paths if structure is complete
-    if all([config.domain, config.product, config.table_name]):
+    # Show generated lake paths (requires datalake_container_name in env_vars)
+    if config.env_vars.get("datalake_container_name"):
         print("   📁 Generated Paths:")
         print(f"     Bronze Lake Path: {config.get_lake_path('bronze')}")
         print(f"     Silver Lake Path: {config.get_lake_path('silver')}")
@@ -37,7 +35,7 @@ def print_config(
         print(f"     Silver: {config.get_work_path('silver')}")
         print(f"     Gold: {config.get_work_path('gold')}")
     else:
-        print("   ⚠️  Data Lake Structure incomplete - paths not generated")
+        print("   ⚠️  datalake_container_name not set - paths not generated")
 
     # Infrastructure variables
     if config.env_vars:

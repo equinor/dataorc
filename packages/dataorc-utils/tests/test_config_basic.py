@@ -19,9 +19,7 @@ from dataorc_utils.config import (  # noqa: E402
 def make_config(**overrides):
     base = dict(
         env="dev",
-        domain="finance",
-        product="forecast",
-        table_name="positions",
+        path_segments=("finance", "forecast", "positions"),
         bronze_version="v1",
         silver_version="v2",
         gold_version="v3",
@@ -74,8 +72,8 @@ def test_validate_rules_pass():
     assert cfg.validate_rules() is True
 
 
-def test_validate_rules_fail_uppercase_domain():
-    cfg = make_config(domain="Finance")
+def test_validate_rules_fail_uppercase_segment():
+    cfg = make_config(path_segments=("Finance", "forecast", "positions"))
     with pytest.raises(ValueError) as exc:
         cfg.validate_rules()
     assert "uppercase" in str(exc.value).lower()
@@ -111,3 +109,9 @@ def test_case_fallback_env_uppercase_resolution(monkeypatch):
     infra = mgr.prepare_infrastructure(["datalake_name", "datalake_container_name"])
     assert infra.variables.get("datalake_name") == "LakeAcctFallback"
     assert infra.variables.get("datalake_container_name") == "container-fb"
+
+
+def test_work_path():
+    """Test that work path is generated correctly."""
+    cfg = make_config()
+    assert cfg.get_work_path("bronze") == "raw/bronze/finance/forecast/positions/v1/work"
