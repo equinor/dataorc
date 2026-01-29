@@ -39,14 +39,15 @@ print_config(cfg, title="Sales Orders Pipeline")
      Bronze Version: v1
      Silver Version: v1
      Gold Version: v1
+    # The version format now optionally supports a revision suffix, e.g. v1r2
    ⚙️ Processing Methods:
      Bronze: incremental
      Silver: incremental
      Gold: delta
    📁 Generated Paths:
-     Bronze Lake Path: data/bronze/sales/orders/order_lines/v1/output/incremental
-     Silver Lake Path: data/silver/sales/orders/order_lines/v1/output/incremental
-     Gold Lake Path: data/gold/sales/orders/order_lines/v1/output/delta
+    Bronze Lake Path: data/bronze/sales/orders/order_lines/v1/output/incremental
+    Silver Lake Path: data/silver/sales/orders/order_lines/v1r2/output/incremental
+    Gold Lake Path: data/gold/sales/orders/order_lines/v1/output/delta
    📁 Work paths:
      Bronze: data/bronze/sales/orders/order_lines/v1/work
      Silver: data/silver/sales/orders/order_lines/v1/work
