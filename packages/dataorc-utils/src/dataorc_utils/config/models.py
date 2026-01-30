@@ -55,7 +55,6 @@ class CorePipelineConfig:
     # Flexible infrastructure variables (datalake_name, container, Azure IDs, etc.)
     env_vars: dict[str, str] = field(default_factory=dict)
 
-
     def __post_init__(self) -> None:
         """Validate path_segments at construction time."""
         if not self.path_segments:
