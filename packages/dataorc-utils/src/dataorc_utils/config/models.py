@@ -55,6 +55,7 @@ class CorePipelineConfig:
     # Flexible infrastructure variables (datalake_name, container, Azure IDs, etc.)
     env_vars: dict[str, str] = field(default_factory=dict)
 
+
     def __post_init__(self) -> None:
         """Validate path_segments at construction time."""
         if not self.path_segments:
@@ -65,6 +66,20 @@ class CorePipelineConfig:
 
     # Convenience properties that return the canonical lake path for each layer.
 
+    # Allow the CorePipelineConfig to behave like a read-only mapping instead of exposing the env_vars directly
+    def get(self, key: str) -> str:
+        val = self.env_vars.get(key)
+        if not isinstance(val, str):
+            # This is a non-standard get() implementation that raises if missing/invalid since normal Mapping.get() implementation would return 'None'
+            raise RuntimeError(
+                f"Missing or invalid environment configuration variable '{key}'"
+            )
+        return val
+
+    def __getitem__(self, key: str) -> str:
+        return self.get(key)
+
+    # Convenience properties that return the canonical lake path for each layer.
     def get_lake_path(
         self,
         layer: str,
