@@ -63,6 +63,8 @@ nav:
           - CorePipelineConfig: packages/dataorc-utils/config/core_pipeline_config.md
           - PipelineParameterManager: packages/dataorc-utils/config/pipeline_parameter_manager.md
           - Defaults and validation: packages/dataorc-utils/config/defaults_and_validation.md
+        - Lake:
+          - Overview: packages/dataorc-utils/lake/index.md
         - Databricks:
           - Overview: packages/dataorc-utils/databricks/index.md
           - Mounts: packages/dataorc-utils/databricks/mounts.md
