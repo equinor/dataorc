@@ -76,7 +76,6 @@ fs = LakeFileSystem(base_path="/dbfs/mnt/datalakestore/bronze")
 |--------|---------|-------------|
 | `exists(path)` | `bool` | Check if a file or directory exists. |
 | `delete(path)` | `bool` | Delete a file. Returns `True` if deleted, `False` if didn't exist. |
-| `makedirs(path, exist_ok=True)` | `None` | Create directory and all parent directories. |
 
 ## Usage in Pipelines
 

@@ -1,22 +1,17 @@
 """LakeFileSystem - unified interface for data lake operations.
 
-This is the main public class that orchestrates all lake operations.
-It delegates to specialized modules for specific operations.
-
-IMPORTANT: This class does NOT perform path normalization. Callers are
-responsible for providing correct absolute paths for their environment.
+Path-agnostic file operations for Databricks pipelines.
+Callers are responsible for providing correct absolute paths.
 On Databricks with FUSE mount, paths should include /dbfs/ prefix.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 from typing import Any
 
 import fsspec
-
-from . import directory, text_io
-from .backend import create_filesystem
 
 logger = logging.getLogger(__name__)
 
@@ -24,27 +19,14 @@ logger = logging.getLogger(__name__)
 class LakeFileSystem:
     """Unified interface for data lake file operations.
 
-    This class is path-agnostic - it accepts paths as-is without normalization.
-    Callers are responsible for providing correct paths for their environment.
-
-    Example usage:
-        # On Databricks (paths must include /dbfs/ prefix)
-        fs = LakeFileSystem()
-        fs.write_json("/dbfs/mnt/datalakestore/data.json", {"key": "value"})
-
-        # With base path (paths are joined with base)
-        fs = LakeFileSystem(base_path="/dbfs/mnt/datalakestore/bronze")
-        fs.write_json("file.json", data)  # Writes to base_path/file.json
+    Example:
+        fs = LakeFileSystem(base_path="/dbfs/mnt/datalake/bronze")
+        fs.write_json("data.json", {"key": "value"})
+        data = fs.read_json("data.json")
     """
 
     def __init__(self, base_path: str | None = None):
-        """Initialize the filesystem.
-
-        Args:
-            base_path: Optional base path to prepend to all operations.
-                       Useful for scoping to a specific domain/product.
-                       Should be an absolute path valid for the runtime.
-        """
+        """Initialize with optional base path prepended to all operations."""
         self._base_path = base_path.rstrip("/") if base_path else None
         self._fs: fsspec.AbstractFileSystem | None = None
 
@@ -52,45 +34,66 @@ class LakeFileSystem:
     def fs(self) -> fsspec.AbstractFileSystem:
         """Lazy initialization of fsspec filesystem."""
         if self._fs is None:
-            self._fs = create_filesystem()
+            self._fs = fsspec.filesystem("file")
         return self._fs
 
     def _resolve(self, path: str) -> str:
-        """Join path with base_path if set. No normalization."""
+        """Join path with base_path if set."""
         if self._base_path:
             return f"{self._base_path}/{path.lstrip('/')}"
         return path
+
+    def _get_parent(self, path: str) -> str | None:
+        """Get parent directory of a path."""
+        parts = path.rstrip("/").rsplit("/", 1)
+        return parts[0] if len(parts) > 1 and parts[0] else None
 
     # --- Directory Operations ---
 
     def exists(self, path: str) -> bool:
         """Check if a file or directory exists."""
-        return directory.exists(self.fs, self._resolve(path))
+        return self.fs.exists(self._resolve(path))
 
     def delete(self, path: str) -> bool:
         """Delete a file. Returns True if deleted, False if didn't exist."""
-        return directory.delete(self.fs, self._resolve(path))
-
-    def makedirs(self, path: str, exist_ok: bool = True) -> None:
-        """Create directory and all parent directories."""
-        directory.makedirs(self.fs, self._resolve(path), exist_ok=exist_ok)
+        resolved = self._resolve(path)
+        if not self.fs.exists(resolved):
+            return False
+        self.fs.rm(resolved)
+        return True
 
     # --- Text Operations ---
 
     def read_text(self, path: str) -> str | None:
         """Read a text file. Returns None if file doesn't exist."""
-        return text_io.read_text(self.fs, self._resolve(path))
+        resolved = self._resolve(path)
+        if not self.fs.exists(resolved):
+            return None
+        with self.fs.open(resolved, "r", encoding="utf-8") as f:
+            return f.read()
 
     def write_text(self, path: str, content: str) -> None:
         """Write a text file, creating parent directories if needed."""
-        text_io.write_text(self.fs, self._resolve(path), content)
+        resolved = self._resolve(path)
+        parent = self._get_parent(resolved)
+        if parent:
+            self.fs.makedirs(parent, exist_ok=True)
+        with self.fs.open(resolved, "w", encoding="utf-8") as f:
+            f.write(content)
 
     # --- JSON Operations ---
 
     def read_json(self, path: str) -> dict[str, Any] | None:
-        """Read a JSON file. Returns None if file doesn't exist."""
-        return text_io.read_json(self.fs, self._resolve(path))
+        """Read a JSON file. Returns None if file doesn't exist or parse fails."""
+        content = self.read_text(path)
+        if content is None:
+            return None
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError as exc:
+            logger.warning("Failed to parse JSON from %s: %s", path, exc)
+            return None
 
     def write_json(self, path: str, data: dict[str, Any], indent: int = 2) -> None:
         """Write a JSON file."""
-        text_io.write_json(self.fs, self._resolve(path), data, indent=indent)
+        self.write_text(path, json.dumps(data, indent=indent, default=str))
