@@ -23,7 +23,7 @@ def _clear_cache() -> None:
 def get_keyvault_secret(
     vault_url: str,
     secret_name: str,
-    max_retries: int = 3,
+    max_retries: int = 2,
     retry_delay: float = 1.0,
 ) -> str:
     """Retrieve a secret from Azure Key Vault with retry logic.
@@ -58,7 +58,7 @@ def get_keyvault_secret(
     retryable = (ClientAuthenticationError, HttpResponseError, ServiceRequestError)
     last_exc: Exception | None = None
 
-    for attempt in range(max_retries + 1):
+    for attempt in range(max_retries):
         try:
             # Lazy init credential and client
             if _credential is None:
@@ -75,12 +75,12 @@ def get_keyvault_secret(
 
         except retryable as exc:
             last_exc = exc
-            if attempt < max_retries:
+            if attempt < max_retries - 1:
                 delay = retry_delay * (2**attempt)
                 logger.warning(
                     "Key Vault request failed (attempt %d/%d): %s. Retrying in %.1fs...",
                     attempt + 1,
-                    max_retries + 1,
+                    max_retries,
                     exc,
                     delay,
                 )
@@ -90,7 +90,7 @@ def get_keyvault_secret(
             else:
                 logger.error(
                     "Key Vault request failed after %d attempts: %s",
-                    max_retries + 1,
+                    max_retries,
                     exc,
                 )
 
