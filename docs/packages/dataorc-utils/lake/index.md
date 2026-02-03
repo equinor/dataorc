@@ -134,8 +134,3 @@ if config is None:
 # Safe - returns False if file doesn't exist
 deleted = fs.delete("maybe_exists.txt")
 ```
-
-## Runtime Detection
-
-The module automatically detects whether it's running on Databricks (by checking for `/dbfs`)
-and uses the appropriate fsspec backend. This is transparent to your code.
