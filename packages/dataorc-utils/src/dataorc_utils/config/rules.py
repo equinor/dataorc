@@ -28,7 +28,7 @@ def lowercase_lake_path_rule(config: "CorePipelineConfig", layer: str) -> bool:
     return True
 
 
-_VERSION_PATTERN = re.compile(r"^v[0-9]+$")
+_VERSION_PATTERN = re.compile(r"^v[0-9]+(?:r[0-9]+)?$")
 
 
 def version_format_rule(config: "CorePipelineConfig", layer: str) -> bool:
@@ -42,7 +42,7 @@ def version_format_rule(config: "CorePipelineConfig", layer: str) -> bool:
     value = getattr(config, attr)
     if not isinstance(value, str) or not _VERSION_PATTERN.match(value):
         raise ValueError(
-            f"Version for layer '{layer}' must match pattern 'v<integer>' (e.g. v1); got: {value!r}"
+            f"Version for layer '{layer}' must match pattern 'v<integer>' or 'v<integer>r<integer>' (e.g. v1 or v1r2); got: {value!r}"
         )
     path = config.get_lake_path(layer)
     # Ensure token boundary match in path
