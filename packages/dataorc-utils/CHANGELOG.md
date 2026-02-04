@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.5.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.4.0...dataorc-utils-v0.5.0) (2026-02-04)
+
+
+### Features
+
+* introduce dictionary functionality for environment variables access ([#57](https://github.com/equinor/dataorc/issues/57)) ([b6291fa](https://github.com/equinor/dataorc/commit/b6291fa98e7ea6712e6eb7089482a98963452686))
+* **utils:** implement LakeFileSystem for data lake operations and add documentation ([#64](https://github.com/equinor/dataorc/issues/64)) ([be9e738](https://github.com/equinor/dataorc/commit/be9e738f6055e617e29ec29cafbc0118346f558f))
+* **utils:** support optional revision suffix in version format and update tests ([#59](https://github.com/equinor/dataorc/issues/59)) ([8ea0b60](https://github.com/equinor/dataorc/commit/8ea0b60919870a84a362f2b22c7b060db0d9a5c9))
+
 ## [0.4.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.3.0...dataorc-utils-v0.4.0) (2025-12-10)
 
 
