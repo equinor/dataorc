@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
+from pathlib import PurePosixPath
 from typing import Any
 
 import fsspec
@@ -27,7 +28,7 @@ class LakeFileSystem:
 
     def __init__(self, base_path: str | None = None):
         """Initialize with optional base path prepended to all operations."""
-        self._base_path = base_path.rstrip("/") if base_path else None
+        self._base_path = PurePosixPath(base_path) if base_path else None
         self._fs: fsspec.AbstractFileSystem | None = None
 
     @property
@@ -40,13 +41,8 @@ class LakeFileSystem:
     def _resolve(self, path: str) -> str:
         """Join path with base_path if set."""
         if self._base_path:
-            return f"{self._base_path}/{path.lstrip('/')}"
+            return str(self._base_path / path.lstrip("/"))
         return path
-
-    def _get_parent(self, path: str) -> str | None:
-        """Get parent directory of a path."""
-        parts = path.rstrip("/").rsplit("/", 1)
-        return parts[0] if len(parts) > 1 and parts[0] else None
 
     # --- Directory Operations ---
 
@@ -75,7 +71,7 @@ class LakeFileSystem:
     def write_text(self, path: str, content: str) -> None:
         """Write a text file, creating parent directories if needed."""
         resolved = self._resolve(path)
-        parent = self._get_parent(resolved)
+        parent = self.fs._parent(resolved)
         if parent:
             self.fs.makedirs(parent, exist_ok=True)
         with self.fs.open(resolved, "w", encoding="utf-8") as f:
