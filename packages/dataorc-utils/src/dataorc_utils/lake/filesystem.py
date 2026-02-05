@@ -16,6 +16,9 @@ import fsspec
 
 logger = logging.getLogger(__name__)
 
+# Type alias for JSON-serializable data
+JSONValue = dict[str, Any] | list[Any] | str | int | float | bool | None
+
 
 class LakeFileSystem:
     """Unified interface for data lake file operations.
@@ -79,7 +82,7 @@ class LakeFileSystem:
 
     # --- JSON Operations ---
 
-    def read_json(self, path: str) -> dict[str, Any] | None:
+    def read_json(self, path: str) -> JSONValue:
         """Read a JSON file. Returns None if file doesn't exist or parse fails."""
         content = self.read_text(path)
         if content is None:
@@ -90,6 +93,6 @@ class LakeFileSystem:
             logger.warning("Failed to parse JSON from %s: %s", path, exc)
             return None
 
-    def write_json(self, path: str, data: dict[str, Any], indent: int = 2) -> None:
+    def write_json(self, path: str, data: JSONValue, indent: int = 2) -> None:
         """Write a JSON file."""
         self.write_text(path, json.dumps(data, indent=indent, default=str))
