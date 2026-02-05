@@ -22,12 +22,10 @@ infra = mgr.prepare_infrastructure([
     "datalake_container_name",
 ])
 
-# Build core config
+# Build core config with flexible path segments (1-N levels)
 cfg = mgr.build_core_config(
     infra,
-    domain="sales",
-    product="orders",
-    table_name="order_lines",
+    path_segments=("sales", "orders", "order_lines"),
 )
 
 print(cfg.get_lake_path("bronze"))
@@ -44,14 +42,12 @@ container = cfg.env_vars["datalake_container_name"]
 ```python
 PipelineParameterManager(
     environments_config: dict = None,
-    domain_configs: dict = None,
-    product_configs: dict = None,
     case_fallback: bool = False,
 )
 ```
 
 **Parameters:**
-- `environments_config`, `domain_configs`, `product_configs` — optional advanced configs
+- `environments_config` — optional advanced environment configurations
 - `case_fallback` — if True, tries uppercase fallback for env vars (default: False)
 
 For most use cases: `PipelineParameterManager()`
@@ -87,24 +83,23 @@ infra = mgr.prepare_infrastructure([
 ])
 ```
 
-### build_core_config(infra, domain, product, table_name, ...)
+### build_core_config(infra, path_segments, ...)
 
 Assembles immutable `CorePipelineConfig`. Validates before returning.
 
 **Parameters:**
 - `infra` (InfraContext) — from `prepare_infrastructure()`
-- `domain`, `product`, `table_name` — path structure
+- `path_segments` (tuple[str, ...]) — **required**, flexible path hierarchy (1-N segments)
 - `bronze_version`, `silver_version`, `gold_version` — defaults to `v1`
 - `bronze_processing_method`, `silver_processing_method`, `gold_processing_method` — defaults to `incremental`, `incremental`, `delta`
 
 **Returns:** `CorePipelineConfig`
 
 ```python
+# Three segments
 cfg = mgr.build_core_config(
     infra,
-    domain="sales",
-    product="orders",
-    table_name="order_lines",
+    path_segments=("sales", "orders", "order_lines"),
     bronze_version="v2",
 )
 ```

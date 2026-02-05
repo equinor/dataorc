@@ -13,12 +13,6 @@ class CoreParam(str, Enum):
     DATALAKE_CONTAINER_NAME = "datalake_container_name"
     ENV = "env"
 
-    # Data Lake Structure Parameters
-    # Following pattern: containername/{layer}/{domain}/{product}/{version}/output/{processing_method}
-    DOMAIN = "domain"  # Business domain  -> Catalog name
-    PRODUCT = "product"  # Product/project  -> Database name
-    TABLE_NAME = "table_name"  # Table name within the product/database
-
     # layers
     BRONZE_VERSION = "bronze_version"  # Version for bronze layer
     SILVER_VERSION = "silver_version"  # Version for silver layer

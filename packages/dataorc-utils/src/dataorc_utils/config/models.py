@@ -26,21 +26,21 @@ class InfraContext:
 class CorePipelineConfig:
     """Immutable pipeline configuration snapshot.
 
-    Path pattern: container/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
+    Path pattern: container/{layer}/{...path_segments}/{version}/output/{processing_method}
     Construct via PipelineParameterManager.build_core_config() in production code.
 
     The `env_vars` dict holds infrastructure environment variables
     (e.g., datalake_name, datalake_container_name, Azure IDs, etc.) captured during
     prepare_infrastructure().
+
+    The `path_segments` tuple allows flexible naming hierarchy. 1-N segments.
     """
 
     # Required
     env: str
 
-    # Structure identifiers
-    domain: str = ""
-    product: str = ""
-    table_name: str = ""
+    # Flexible path segments for lake path
+    path_segments: tuple[str, ...]
 
     # Layer versions
     bronze_version: str = Defaults.VERSION
@@ -54,6 +54,16 @@ class CorePipelineConfig:
 
     # Flexible infrastructure variables (datalake_name, container, Azure IDs, etc.)
     env_vars: dict[str, str] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        """Validate path_segments at construction time."""
+        if not self.path_segments:
+            raise ValueError("path_segments must contain at least one segment")
+        for i, segment in enumerate(self.path_segments):
+            if not segment:
+                raise ValueError(f"path_segments[{i}] cannot be empty")
+
+    # Convenience properties that return the canonical lake path for each layer.
 
     # Allow the CorePipelineConfig to behave like a read-only mapping instead of exposing the env_vars directly
     def get(self, key: str) -> str:
@@ -74,33 +84,30 @@ class CorePipelineConfig:
         layer: str,
         processing_method_override: Optional[str] = None,
         version_override: Optional[str] = None,
-        domain_override: Optional[str] = None,
-        product_override: Optional[str] = None,
-        table_name_override: Optional[str] = None,
+        path_segments_override: Optional[tuple[str, ...]] = None,
     ) -> str:
+        """Generate Data Lake path following the standard structure.
+
+        Structure: containername/{layer}/{...path_segments}/{version}/output/{processing_method}
+
+        Args:
+            layer: bronze, silver, or gold
+            processing_method_override: override processing method for specific layer
+            version_override: override version for specific layer
+            path_segments_override: override path segments for this call
+
+        Returns:
+            Full data lake path
         """
-            Generate Data Lake path following the standard structure.
-
-        Structure: containername/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
-
-            Args:
-                layer: bronze, silver, or gold
-                processing_method_override: override processing method for specific layer
-                version_override: override version for specific layer
-
-            Returns:
-                Full data lake path
-        """
-        # Allow callers to override identifiers; fall back to the instance values.
-        domain = domain_override or self.domain
-        product = product_override or self.product
-        table_name = table_name_override or self.table_name
+        segments = path_segments_override or self.path_segments
         container = self.env_vars.get("datalake_container_name", "")
 
-        if not all([container, domain, product, table_name]):
+        if not container:
             raise ValueError(
-                "datalake_container_name, domain, product and table_name must be set to generate lake path"
+                "datalake_container_name must be set to generate lake path"
             )
+
+        segments_path = "/".join(segments)
 
         # Resolve attribute names directly (e.g. bronze_version, bronze_processing_method)
         v_attr = f"{layer}_version"
@@ -111,15 +118,15 @@ class CorePipelineConfig:
             self, p_attr, Defaults.BRONZE_PROCESSING_METHOD
         )
 
-        return f"{container}/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}"
+        return (
+            f"{container}/{layer}/{segments_path}/{version}/output/{processing_method}"
+        )
 
     def get_work_path(
         self,
         layer: str,
         version_override: Optional[str] = None,
-        domain_override: Optional[str] = None,
-        product_override: Optional[str] = None,
-        table_name_override: Optional[str] = None,
+        path_segments_override: Optional[tuple[str, ...]] = None,
     ) -> str:
         """Return the working path for a layer.
 
@@ -133,9 +140,7 @@ class CorePipelineConfig:
             layer,
             processing_method_override=None,
             version_override=version_override,
-            domain_override=domain_override,
-            product_override=product_override,
-            table_name_override=table_name_override,
+            path_segments_override=path_segments_override,
         )
 
         marker = "/output/"

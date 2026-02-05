@@ -24,19 +24,19 @@ infra = mgr.prepare_infrastructure([
     "datalake_container_name",
 ])
 
+# path_segments is flexible - use 1 to N segments as needed
 cfg = mgr.build_core_config(
     infra,
-    domain="sales",
-    product="orders",
-    table_name="order_lines",
+    path_segments=("sales", "orders", "order_lines"),
 )
 
 print(cfg.get_lake_path("bronze"))
+
 print(cfg.get_work_path("bronze"))
 
 # Access infrastructure variables
 datalake = cfg.env_vars["datalake_name"]
 # Or: infra.variables["datalake_name"]
+```
 
 Note: if `env` is not set in the environment, `prepare_infrastructure()` will default it to "dev".
-```
