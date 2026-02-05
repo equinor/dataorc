@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.5.0...dataorc-utils-v0.6.0) (2026-02-05)
+
+
+### Features
+
+* **utils:** add retry logic and customizable parameters for get_keyvault_secret ([#63](https://github.com/equinor/dataorc/issues/63)) ([acbc2b7](https://github.com/equinor/dataorc/commit/acbc2b7f22890ab485402b56de09e9b4a73f7629))
+
 ## [0.5.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.4.0...dataorc-utils-v0.5.0) (2026-02-04)
 
 
