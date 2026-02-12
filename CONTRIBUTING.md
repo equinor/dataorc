@@ -6,6 +6,29 @@ This document provides guidelines for contributing to the dataorc project.
 
 [Create a new issue](https://github.com/equinor/dataorc/issues/new/choose).
 
+## Documenting and adding `dataorc-utils` utilities
+
+Utilities in `dataorc-utils` should be documented with an explicit rationale. In general, utilities should exist only if they provide at least one meaningful benefit beyond "saving a few lines".
+
+A utility/wrapper is considered valuable when it provides one or more of:
+
+* **Lifecycle improvements** (client/credential reuse, caching, pooling, fewer repeated initializations)
+* **Portability** (optional dependencies with clearly defined behavior when missing)
+* **Stability** (shielding callers from stopping using SDK or cross-project consistency concerns)
+* **Cross-cutting behavior** (standardized errors, logging hooks, retries/timeouts, tracing)
+* **Testability** (supports dependency injection; can be mocked without patching deep SDK internals)
+
+Avoid utilities that primarily:
+
+* instantiate an SDK client/credential and call a single method, without adding reuse/injection/caching, or
+* hide important configuration options that callers commonly need (tenant, authority host, managed identity client id, retry/transport settings).
+
+If a helper creates SDK objects internally (e.g. `DefaultAzureCredential`, `SecretClient`, `AzureAppConfigurationClient`), it should typically support at least one of:
+
+* **dependency injection** (accept `credential=` and/or `client=`), or
+* **a factory + reuse pattern** (a cached `get_client()` or similar), or
+* a clear recommendation in docs for batch usage liek "create one credential/client and reuse for N reads".
+
 ## Making changes
 
 1. Create a new branch. For external contributors, create a fork.
