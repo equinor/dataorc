@@ -27,6 +27,9 @@ def print_config(
     print(f"     Gold: {config.gold_processing_method}")
 
     # Only show generated lake paths if structure is complete
+    container = config.env_vars.get("datalake_container_name", "")
+    if not container:
+        print("   📦 Layer-as-container mode (no datalake_container_name)")
     if all([config.domain, config.product, config.table_name]):
         print("   📁 Generated Paths:")
         print(f"     Bronze Lake Path: {config.get_lake_path('bronze')}")

@@ -26,7 +26,12 @@ class InfraContext:
 class CorePipelineConfig:
     """Immutable pipeline configuration snapshot.
 
-    Path pattern: container/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
+    Path pattern (with container): {container}/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
+    Path pattern (layer-as-container): {layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
+
+    When datalake_container_name is omitted from env_vars, the layer name
+    (bronze/silver/gold) is assumed to be the storage container itself.
+
     Construct via PipelineParameterManager.build_core_config() in production code.
 
     The `env_vars` dict holds infrastructure environment variables
@@ -81,7 +86,13 @@ class CorePipelineConfig:
         """
             Generate Data Lake path following the standard structure.
 
-        Structure: containername/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
+        When datalake_container_name is set:
+            Structure: {container}/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
+
+        When datalake_container_name is omitted (layer-as-container mode):
+            Structure: {layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}
+            In this mode each layer (bronze/silver/gold) is its own storage container,
+            so no extra container prefix is needed in the path.
 
             Args:
                 layer: bronze, silver, or gold
@@ -97,9 +108,9 @@ class CorePipelineConfig:
         table_name = table_name_override or self.table_name
         container = self.env_vars.get("datalake_container_name", "")
 
-        if not all([container, domain, product, table_name]):
+        if not all([domain, product, table_name]):
             raise ValueError(
-                "datalake_container_name, domain, product and table_name must be set to generate lake path"
+                "domain, product and table_name must be set to generate lake path"
             )
 
         # Resolve attribute names directly (e.g. bronze_version, bronze_processing_method)
@@ -111,7 +122,11 @@ class CorePipelineConfig:
             self, p_attr, Defaults.BRONZE_PROCESSING_METHOD
         )
 
-        return f"{container}/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}"
+        # When container is set, prefix the path with it; otherwise the layer
+        # itself acts as the container ("layer-as-container" mode).
+        if container:
+            return f"{container}/{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}"
+        return f"{layer}/{domain}/{product}/{table_name}/{version}/output/{processing_method}"
 
     def get_work_path(
         self,

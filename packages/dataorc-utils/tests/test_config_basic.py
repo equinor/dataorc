@@ -16,7 +16,10 @@ from dataorc_utils.config import (  # noqa: E402
 )
 
 
-def make_config(**overrides):
+def make_config(container_name="raw", **overrides):
+    env_vars = {"datalake_name": "dlakeacct"}
+    if container_name:
+        env_vars["datalake_container_name"] = container_name
     base = dict(
         env="dev",
         domain="finance",
@@ -28,84 +31,86 @@ def make_config(**overrides):
         bronze_processing_method="incremental",
         silver_processing_method="full",
         gold_processing_method="delta",
-        env_vars={
-            "datalake_name": "dlakeacct",
-            "datalake_container_name": "raw",
-        },
+        env_vars=env_vars,
     )
     base.update(overrides)
     return CorePipelineConfig(**base)
 
 
-def test_lake_path_bronze():
+# --- Lake path generation ---
+
+
+@pytest.mark.parametrize(
+    "layer, expected",
+    [
+        ("bronze", "raw/bronze/finance/forecast/positions/v1/output/incremental"),
+        ("silver", "raw/silver/finance/forecast/positions/v2/output/full"),
+        ("gold", "raw/gold/finance/forecast/positions/v3/output/delta"),
+    ],
+)
+def test_lake_path_with_container(layer, expected):
     cfg = make_config()
-    assert (
-        cfg.get_lake_path("bronze")
-        == "raw/bronze/finance/forecast/positions/v1/output/incremental"
-    )
+    assert cfg.get_lake_path(layer) == expected
 
 
-def test_lake_path_silver():
-    cfg = make_config()
-    assert (
-        cfg.get_lake_path("silver")
-        == "raw/silver/finance/forecast/positions/v2/output/full"
-    )
+@pytest.mark.parametrize(
+    "layer, expected",
+    [
+        ("bronze", "bronze/finance/forecast/positions/v1/output/incremental"),
+        ("silver", "silver/finance/forecast/positions/v2/output/full"),
+        ("gold", "gold/finance/forecast/positions/v3/output/delta"),
+    ],
+)
+def test_lake_path_without_container(layer, expected):
+    """When container_name is omitted, layer acts as the path root."""
+    cfg = make_config(container_name=None)
+    assert cfg.get_lake_path(layer) == expected
 
 
-def test_lake_path_gold():
-    cfg = make_config()
-    assert (
-        cfg.get_lake_path("gold")
-        == "raw/gold/finance/forecast/positions/v3/output/delta"
-    )
-
-
-def test_lake_path_overrides():
-    cfg = make_config()
-    custom = cfg.get_lake_path(
+@pytest.mark.parametrize("container_name", ["raw", None])
+def test_lake_path_overrides(container_name):
+    cfg = make_config(container_name=container_name)
+    path = cfg.get_lake_path(
         "gold", processing_method_override="full", version_override="v9"
     )
-    assert custom == "raw/gold/finance/forecast/positions/v9/output/full"
+    assert path.endswith("gold/finance/forecast/positions/v9/output/full")
 
 
-def test_validate_rules_pass():
-    cfg = make_config()
+@pytest.mark.parametrize("container_name", ["raw", None])
+def test_work_path(container_name):
+    cfg = make_config(container_name=container_name)
+    path = cfg.get_work_path("bronze")
+    assert path.endswith("bronze/finance/forecast/positions/v1/work")
+
+
+# --- Validation rules ---
+
+
+@pytest.mark.parametrize("container_name", ["raw", None])
+def test_validate_rules_pass(container_name):
+    cfg = make_config(container_name=container_name)
     assert cfg.validate_rules() is True
 
 
 def test_validate_rules_fail_uppercase_domain():
     cfg = make_config(domain="Finance")
-    with pytest.raises(ValueError) as exc:
+    with pytest.raises(ValueError, match="(?i)uppercase"):
         cfg.validate_rules()
-    assert "uppercase" in str(exc.value).lower()
 
 
-def test_validate_rules_fail_bad_version_pattern():
-    cfg = make_config(bronze_version="version1")  # missing leading 'v'
-    with pytest.raises(ValueError) as exc:
-        cfg.validate_rules()
-    assert "pattern" in str(exc.value).lower() or "v<integer>" in str(exc.value)
-
-
-def test_validate_rules_pass_revision_format():
-    cfg = make_config(bronze_version="v1r2", silver_version="v10r0", gold_version="v3")
-    # Should not raise
-    assert cfg.validate_rules() is True
-
-
-def test_validate_rules_fail_bad_revision_pattern():
-    # revision must be numeric when present
-    cfg = make_config(bronze_version="v1rX")
+@pytest.mark.parametrize("bad_version", ["version1", "v1rX"])
+def test_validate_rules_fail_bad_version(bad_version):
+    cfg = make_config(bronze_version=bad_version)
     with pytest.raises(ValueError):
         cfg.validate_rules()
 
 
-def test_validate_rules_pass_custom_version_override():
-    # Overrides should not break rule when format is correct
-    cfg = make_config()
-    path = cfg.get_lake_path("bronze", version_override="v99")
-    assert path.endswith("/v99/output/incremental")
+def test_validate_rules_pass_revision_format():
+    cfg = make_config(bronze_version="v1r2", silver_version="v10r0", gold_version="v3")
+    assert cfg.validate_rules() is True
+
+
+# --- Case fallback ---
 
 
 def test_case_fallback_env_uppercase_resolution(monkeypatch):
