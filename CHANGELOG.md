@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/equinor/dataorc/compare/dataorc-v0.2.0...dataorc-v0.3.0) (2026-02-16)
+
+
+### Features
+
+* **utils:** add AdlsLakeFileSystem for Azure Data Lake Storage ([#70](https://github.com/equinor/dataorc/issues/70)) ([e8f233d](https://github.com/equinor/dataorc/commit/e8f233d540e84891dea537aaf473d63165aaf1bd))
+
 ## [0.2.0](https://github.com/equinor/dataorc/compare/dataorc-v0.1.1...dataorc-v0.2.0) (2026-02-05)
 
 
