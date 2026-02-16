@@ -143,28 +143,3 @@ class AdlsLakeFileSystem:
             return True
         except Exception:
             return False
-
-    def list_paths(
-        self, path: str = "", *, recursive: bool = True
-    ) -> list[str]:
-        """List file paths under *path* inside the container.
-
-        Returns paths relative to *base_path* (i.e. the same form
-        callers pass to the other methods).
-        """
-        resolved = self._resolve(path) if path else self._base_path
-        try:
-            raw_paths = self._fs_client.get_paths(
-                path=resolved or "/", recursive=recursive
-            )
-            result: list[str] = []
-            for item in raw_paths:
-                name: str = item.name  # type: ignore[assignment]
-                if self._base_path and name.startswith(self._base_path):
-                    name = name[len(self._base_path) :].lstrip("/")
-                if name:
-                    result.append(name)
-            return result
-        except Exception:
-            logger.debug("Could not list %s", resolved, exc_info=True)
-            return []
