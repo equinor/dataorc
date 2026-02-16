@@ -17,12 +17,12 @@ from typing import Any
 from azure.identity import DefaultAzureCredential
 from azure.storage.filedatalake import DataLakeServiceClient
 
-from .protocols import BaseLakeFileSystem
+from .protocols import LakeFileSystemProtocol
 
 logger = logging.getLogger(__name__)
 
 
-class AdlsLakeFileSystem(BaseLakeFileSystem):
+class AdlsLakeFileSystem(LakeFileSystemProtocol):
     """ADLS Gen2-backed file operations — drop-in for LakeFileSystem.
 
     Args:

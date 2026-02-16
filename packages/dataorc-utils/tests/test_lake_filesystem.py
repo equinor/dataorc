@@ -8,7 +8,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from dataorc_utils.lake import (
-    BaseLakeFileSystem,
     LakeFileSystem,
     LakeFileSystemProtocol,
 )
@@ -105,9 +104,6 @@ def fs(request, lake_fs, adls_fs):
 class TestFileSystem:
     def test_implements_protocol(self, fs):
         assert isinstance(fs, LakeFileSystemProtocol)
-
-    def test_inherits_base_class(self, fs):
-        assert isinstance(fs, BaseLakeFileSystem)
 
     def test_write_and_read_text(self, fs):
         assert not fs.exists("test.txt")

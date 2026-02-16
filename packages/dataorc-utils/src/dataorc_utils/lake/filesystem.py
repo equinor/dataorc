@@ -9,10 +9,10 @@ from __future__ import annotations
 
 import fsspec
 
-from .protocols import BaseLakeFileSystem
+from .protocols import LakeFileSystemProtocol
 
 
-class LakeFileSystem(BaseLakeFileSystem):
+class LakeFileSystem(LakeFileSystemProtocol):
     """Unified interface for data lake file operations.
 
     Example:

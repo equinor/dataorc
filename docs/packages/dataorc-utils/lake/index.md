@@ -16,13 +16,16 @@ Two implementations are available:
 | `LakeFileSystem` | Local / FUSE mount (via `fsspec`) | Databricks with mounted storage |
 | `AdlsLakeFileSystem` | ADLS Gen2 SDK (direct) | Any environment — no mounts or dbutils needed |
 
-Both classes inherit from `BaseLakeFileSystem` and expose the **same core API**
+Both classes inherit from `LakeFileSystemProtocol` and expose the **same core API**
 (`read_text`, `write_text`, `read_json`, `write_json`, `exists`, `delete`),
 so switching between them requires only changing the constructor.
 
-A `LakeFileSystemProtocol` is also provided for **structural typing** — use it
-as a type hint when your code should accept *any* filesystem backend without
-coupling to a concrete class.
+The `LakeFileSystemProtocol` serves double duty:
+
+- **Type hint** — use it when your code should accept *any* filesystem backend
+  without coupling to a concrete class.
+- **Shared logic** — subclasses that inherit from it get `read_json`, `write_json`,
+  and `_resolve` for free. Only the four backend-specific primitives need implementing.
 
 **Key design principle:** The module is **path-agnostic**. It performs pure I/O operations
 without assuming any specific mounting conventions.
@@ -30,16 +33,17 @@ without assuming any specific mounting conventions.
 ### Architecture
 
 ```text
-BaseLakeFileSystem (ABC)
-├── read_text()      ← @abstractmethod  (each backend implements)
-├── write_text()     ← @abstractmethod
-├── exists()         ← @abstractmethod
-├── delete()         ← @abstractmethod
+LakeFileSystemProtocol (Protocol)
+├── read_text()      ← primitive  (each backend implements)
+├── write_text()     ← primitive
+├── exists()         ← primitive
+├── delete()         ← primitive
+├── _resolve()       ← shared (prepends base_path)
 ├── read_json()      ← shared (calls read_text)
 └── write_json()     ← shared (calls write_text)
 
-LakeFileSystem(BaseLakeFileSystem)       # fsspec / local / FUSE mount
-AdlsLakeFileSystem(BaseLakeFileSystem)   # Azure SDK (direct ADLS Gen2)
+LakeFileSystem(LakeFileSystemProtocol)       # fsspec / local / FUSE mount
+AdlsLakeFileSystem(LakeFileSystemProtocol)   # Azure SDK (direct ADLS Gen2)
 ```
 
 ## Quick start
@@ -98,10 +102,14 @@ You can also pass a custom credential via the `credential` parameter
 
 ## API Reference
 
-### BaseLakeFileSystem
+### LakeFileSystemProtocol
 
-Abstract base class that provides shared JSON logic.
-Subclasses must implement `read_text`, `write_text`, `exists`, and `delete`.
+The shared `Protocol` that defines the filesystem contract.
+Both implementations inherit from it, gaining `read_json`,
+`write_json`, and `_resolve` automatically.
+
+Each backend provides its own `read_text`, `write_text`, `exists`,
+and `delete`.
 
 ### LakeFileSystem
 
