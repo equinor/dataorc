@@ -4,18 +4,27 @@ title: dataorc-utils - Lake
 
 # dataorc-utils — Lake
 
-Filesystem utilities for reading and writing to the Data Lake in Databricks pipelines.
+Filesystem utilities for reading and writing to the Data Lake.
 
 ## Overview
 
-The `lake` module provides a unified interface for file operations on Azure Data Lake Storage,
-abstracting away the differences between local development and Databricks runtime environments.
+The `lake` module provides a unified interface for file operations on Azure Data Lake Storage.
+Two implementations are available:
+
+| Class | Backend | Use case |
+|-------|---------|----------|
+| `LakeFileSystem` | Local / FUSE mount (via `fsspec`) | Databricks with mounted storage |
+| `AdlsLakeFileSystem` | ADLS Gen2 SDK (direct) | Any environment — no mounts or dbutils needed |
+
+Both classes expose the **same core API** (`read_text`, `write_text`, `read_json`, `write_json`,
+`exists`, `delete`), so switching between them requires only changing the constructor.
 
 **Key design principle:** The module is **path-agnostic**. It performs pure I/O operations
-without assuming any specific mounting conventions. Path normalization (e.g., `dls://` → `/mnt/...`)
-is the responsibility of your pipeline code.
+without assuming any specific mounting conventions.
 
 ## Quick start
+
+### LakeFileSystem (mount-based)
 
 ```python
 from dataorc_utils.lake import LakeFileSystem
@@ -35,6 +44,40 @@ config = fs.read_json("config.json")
 if fs.exists("old_file.txt"):
     fs.delete("old_file.txt")
 ```
+
+### AdlsLakeFileSystem (direct ADLS Gen2)
+
+!!! note "Requires the `azure` extra"
+    Install with: `pip install dataorc-utils[azure]`
+
+```python
+from dataorc_utils.lake import AdlsLakeFileSystem
+
+# Connect directly to ADLS Gen2 — no mounts or dbutils required
+fs = AdlsLakeFileSystem(
+    account_url="https://testdatadevsc.dfs.core.windows.net",
+    container="bronze",
+    base_path="sales/orders",          # optional prefix inside the container
+)
+
+# Same API from here on
+fs.write_text("metadata.txt", "Pipeline run: 2026-02-02")
+content = fs.read_text("metadata.txt")
+
+fs.write_json("config.json", {"version": 1, "status": "complete"})
+config = fs.read_json("config.json")
+
+if fs.exists("old_file.txt"):
+    fs.delete("old_file.txt")
+
+# Bonus: list files in a directory
+files = fs.list_paths("_metadata/")
+```
+
+Authentication uses `DefaultAzureCredential` by default, which supports
+Managed Identity, Azure CLI (`az login`), and environment variables.
+You can also pass a custom credential via the `credential` parameter
+(e.g. `ManagedIdentityCredential()`).
 
 ## API Reference
 
@@ -77,6 +120,48 @@ fs = LakeFileSystem(base_path="/dbfs/mnt/datalakestore/bronze")
 | `exists(path)` | `bool` | Check if a file or directory exists. |
 | `delete(path)` | `bool` | Delete a file. Returns `True` if deleted, `False` if didn't exist. |
 
+---
+
+### AdlsLakeFileSystem
+
+Direct connection to ADLS Gen2 — no mounts or Databricks utilities required.
+
+#### Constructor
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `account_url` | `str` | Full DFS endpoint, e.g. `"https://<account>.dfs.core.windows.net"` |
+| `container` | `str` | File-system / container name, e.g. `"bronze"` |
+| `base_path` | `str` | Optional prefix inside the container prepended to every path. Defaults to `""`. |
+| `credential` | `Any \| None` | Any Azure credential accepted by the SDK. Defaults to `DefaultAzureCredential()`. |
+
+#### Methods
+
+`AdlsLakeFileSystem` exposes the same text, JSON, and directory methods as `LakeFileSystem`,
+plus one additional method:
+
+##### Text Operations
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `read_text(path)` | `str \| None` | Read a UTF-8 text file. Returns `None` if the file doesn't exist. |
+| `write_text(path, content)` | `None` | Write (or overwrite) a UTF-8 text file. |
+
+##### JSON Operations
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `read_json(path)` | `dict \| None` | Read and parse a JSON file. Returns `None` if the file doesn't exist or parse fails. |
+| `write_json(path, data, indent=2)` | `None` | Write a dictionary as JSON. |
+
+##### Directory Operations
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `exists(path)` | `bool` | Check if a file exists. |
+| `delete(path)` | `bool` | Delete a file. Returns `True` if deleted, `False` otherwise. |
+| `list_paths(path, recursive=True)` | `list[str]` | List file paths under `path`. Returns paths relative to `base_path`. |
+
 ## Usage in Pipelines
 
 ### With CorePipelineConfig
@@ -105,6 +190,8 @@ fs.write_json("_metadata/run_info.json", {
 
 ### Path Handling
 
+#### LakeFileSystem
+
 The module does **not** perform path normalization. Your pipeline code is responsible for
 providing correct absolute paths for the runtime environment.
 
@@ -118,6 +205,12 @@ fs = LakeFileSystem(base_path="/dbfs/mnt/datalakestore/bronze")
 fs = LakeFileSystem()
 fs.write_text("/dbfs/mnt/datalakestore/bronze/file.txt", "content")
 ```
+
+#### AdlsLakeFileSystem
+
+Paths are always **relative to the container and `base_path`** — no mount prefixes needed.
+For example, with `container="bronze"` and `base_path="sales/orders"`,
+calling `fs.write_text("file.txt", ...)` resolves to `bronze/sales/orders/file.txt`.
 
 ### Error Handling
 
