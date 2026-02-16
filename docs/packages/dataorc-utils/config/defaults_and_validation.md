@@ -33,9 +33,7 @@ print_config(cfg, title="Sales Orders Pipeline")
 📦 Pipeline Configuration
    Environment: dev
    🏗️ Data Lake Structure:
-     Domain: sales
-     Product: orders
-     Table: order_lines
+     Path Segments: sales/orders/order_lines
      Bronze Version: v1
      Silver Version: v1
      Gold Version: v1
@@ -61,6 +59,14 @@ print_config(cfg, title="Sales Orders Pipeline")
 
 `CorePipelineConfig.validate_rules()` raises `ValueError` if rule fails. Called automatically by `build_core_config()`.
 
+**Built-in rules:**
+- `lowercase_lake_path_rule` — entire lake path must be lowercase
+- `version_format_rule` — version must match pattern `v<integer>` (e.g., `v1`, `v2`)
+
+**Construction-time validation:**
+- `path_segments` must contain at least one segment
+- Each segment must be a non-empty string
+
 ## Example
 
 ```python
@@ -73,7 +79,7 @@ os.environ["datalake_container_name"] = "data"
 
 mgr = PipelineParameterManager()
 infra = mgr.prepare_infrastructure(["datalake_container_name"])
-cfg = mgr.build_core_config(infra, domain="sales", product="orders", table_name="order_lines")
+cfg = mgr.build_core_config(infra, path_segments=("sales", "orders", "order_lines"))
 
 print_config(cfg)
 print(cfg.get_lake_path("bronze"))

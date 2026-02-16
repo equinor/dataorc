@@ -5,6 +5,7 @@ callable taking (config, layer) and returning True or raising ValueError.
 
 Built‑in rules:
 - `lowercase_lake_path_rule`: lake paths must not contain uppercase letters.
+- `version_format_rule`: version must match pattern v<integer>.
 
 Add new rules by appending to `RULES` or passing a custom list to
 `run_rules_checks`.
@@ -22,6 +23,7 @@ RuleFunc = Callable[["CorePipelineConfig", str], bool]
 
 
 def lowercase_lake_path_rule(config: "CorePipelineConfig", layer: str) -> bool:
+    """Validate that the generated lake path contains no uppercase letters."""
     path = config.get_lake_path(layer)
     if any(ch.isalpha() and ch.isupper() for ch in path):
         raise ValueError(f"Lake path contains uppercase letters: '{path}'")
