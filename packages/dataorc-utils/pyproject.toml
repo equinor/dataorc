@@ -29,6 +29,7 @@ dev = [
 azure = [
     "azure-identity",
     "azure-keyvault-secrets",
+    "azure-storage-file-datalake",
 ]
 
 [tool.ruff]
