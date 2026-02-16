@@ -10,7 +10,6 @@ import pytest
 from dataorc_utils.lake import LakeFileSystem
 from dataorc_utils.lake.adls_filesystem import AdlsLakeFileSystem
 
-
 # ---------------------------------------------------------------------------
 # In-memory ADLS mock — behaves like a tiny object store
 # ---------------------------------------------------------------------------
