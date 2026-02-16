@@ -2,5 +2,12 @@
 
 from .adls_filesystem import AdlsLakeFileSystem
 from .filesystem import LakeFileSystem
+from .protocols import BaseLakeFileSystem, JSONValue, LakeFileSystemProtocol
 
-__all__ = ["AdlsLakeFileSystem", "LakeFileSystem"]
+__all__ = [
+    "AdlsLakeFileSystem",
+    "BaseLakeFileSystem",
+    "LakeFileSystem",
+    "LakeFileSystemProtocol",
+    "JSONValue",
+]
