@@ -65,4 +65,3 @@ class LakeFileSystem(BaseLakeFileSystem):
             self.fs.makedirs(parent, exist_ok=True)
         with self.fs.open(resolved, "w", encoding="utf-8") as f:
             f.write(content)
-
