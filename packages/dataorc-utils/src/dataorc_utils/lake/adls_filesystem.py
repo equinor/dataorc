@@ -114,9 +114,7 @@ class AdlsLakeFileSystem:
             logger.warning("Failed to parse JSON from %s: %s", path, exc)
             return None
 
-    def write_json(
-        self, path: str, data: JSONValue, indent: int = 2
-    ) -> None:
+    def write_json(self, path: str, data: JSONValue, indent: int = 2) -> None:
         """Write a JSON file."""
         self.write_text(path, json.dumps(data, indent=indent, default=str))
 

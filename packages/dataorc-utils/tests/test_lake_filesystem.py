@@ -70,10 +70,11 @@ def lake_fs():
 @pytest.fixture
 def adls_fs():
     """AdlsLakeFileSystem backed by an in-memory mock store."""
-    with patch(
-        "dataorc_utils.lake.adls_filesystem.DataLakeServiceClient"
-    ) as mock_service_cls, patch(
-        "dataorc_utils.lake.adls_filesystem.DefaultAzureCredential"
+    with (
+        patch(
+            "dataorc_utils.lake.adls_filesystem.DataLakeServiceClient"
+        ) as mock_service_cls,
+        patch("dataorc_utils.lake.adls_filesystem.DefaultAzureCredential"),
     ):
         mock_service = mock_service_cls.return_value
         mock_service.get_file_system_client.return_value = _InMemoryFsClient()
