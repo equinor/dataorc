@@ -14,7 +14,8 @@ class CoreParam(str, Enum):
     ENV = "env"
 
     # Data Lake Structure Parameters
-    # Following pattern: containername/{layer}/{domain}/{product}/{version}/output/{processing_method}
+    # Following pattern: [containername/]{layer}/{domain}/{product}/{version}/output/{processing_method}
+    # When datalake_container_name is omitted, the layer itself acts as the container
     DOMAIN = "domain"  # Business domain  -> Catalog name
     PRODUCT = "product"  # Product/project  -> Database name
     TABLE_NAME = "table_name"  # Table name within the product/database
