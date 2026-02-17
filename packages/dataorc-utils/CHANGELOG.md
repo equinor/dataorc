@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.5.0...dataorc-utils-v0.6.0) (2026-02-17)
+
+
+### Features
+
+* **utils:** add AdlsLakeFileSystem for Azure Data Lake Storage ([#70](https://github.com/equinor/dataorc/issues/70)) ([e8f233d](https://github.com/equinor/dataorc/commit/e8f233d540e84891dea537aaf473d63165aaf1bd))
+* **utils:** add retry logic and customizable parameters for get_keyvault_secret ([#63](https://github.com/equinor/dataorc/issues/63)) ([acbc2b7](https://github.com/equinor/dataorc/commit/acbc2b7f22890ab485402b56de09e9b4a73f7629))
+* **utils:** refactor lakefilesystem with protocol ([#73](https://github.com/equinor/dataorc/issues/73)) ([a203db4](https://github.com/equinor/dataorc/commit/a203db4ebae803062a1f2e21e9af73ac212a1476))
+* **utils:** update path patterns to support optional datalake_container_name ([#74](https://github.com/equinor/dataorc/issues/74)) ([0b1e434](https://github.com/equinor/dataorc/commit/0b1e4348d1edf5233bb4b023c74aa1f2b83834df))
+
 ## [0.5.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.4.0...dataorc-utils-v0.5.0) (2026-02-04)
 
 
