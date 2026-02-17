@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/equinor/dataorc/compare/dataorc-v0.3.0...dataorc-v0.4.0) (2026-02-17)
+
+
+### Features
+
+* **utils:** refactor lakefilesystem with protocol ([#73](https://github.com/equinor/dataorc/issues/73)) ([a203db4](https://github.com/equinor/dataorc/commit/a203db4ebae803062a1f2e21e9af73ac212a1476))
+* **utils:** update path patterns to support optional datalake_container_name ([#74](https://github.com/equinor/dataorc/issues/74)) ([0b1e434](https://github.com/equinor/dataorc/commit/0b1e4348d1edf5233bb4b023c74aa1f2b83834df))
+
 ## [0.3.0](https://github.com/equinor/dataorc/compare/dataorc-v0.2.0...dataorc-v0.3.0) (2026-02-16)
 
 
