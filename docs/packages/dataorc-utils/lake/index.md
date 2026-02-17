@@ -16,11 +16,35 @@ Two implementations are available:
 | `LakeFileSystem` | Local / FUSE mount (via `fsspec`) | Databricks with mounted storage |
 | `AdlsLakeFileSystem` | ADLS Gen2 SDK (direct) | Any environment — no mounts or dbutils needed |
 
-Both classes expose the **same core API** (`read_text`, `write_text`, `read_json`, `write_json`,
-`exists`, `delete`), so switching between them requires only changing the constructor.
+Both classes inherit from `LakeFileSystemProtocol` and expose the **same core API**
+(`read_text`, `write_text`, `read_json`, `write_json`, `exists`, `delete`),
+so switching between them requires only changing the constructor.
+
+The `LakeFileSystemProtocol` serves double duty:
+
+- **Type hint** — use it when your code should accept *any* filesystem backend
+  without coupling to a concrete class.
+- **Shared logic** — subclasses that inherit from it get `read_json`, `write_json`,
+  and `_resolve` for free. Only the four backend-specific primitives need implementing.
 
 **Key design principle:** The module is **path-agnostic**. It performs pure I/O operations
 without assuming any specific mounting conventions.
+
+### Architecture
+
+```text
+LakeFileSystemProtocol (Protocol)
+├── read_text()      ← primitive  (each backend implements)
+├── write_text()     ← primitive
+├── exists()         ← primitive
+├── delete()         ← primitive
+├── _resolve()       ← shared (prepends base_path)
+├── read_json()      ← shared (calls read_text)
+└── write_json()     ← shared (calls write_text)
+
+LakeFileSystem(LakeFileSystemProtocol)       # fsspec / local / FUSE mount
+AdlsLakeFileSystem(LakeFileSystemProtocol)   # Azure SDK (direct ADLS Gen2)
+```
 
 ## Quick start
 
@@ -69,9 +93,6 @@ config = fs.read_json("config.json")
 
 if fs.exists("old_file.txt"):
     fs.delete("old_file.txt")
-
-# Bonus: list files in a directory
-files = fs.list_paths("_metadata/")
 ```
 
 Authentication uses `DefaultAzureCredential` by default, which supports
@@ -81,9 +102,18 @@ You can also pass a custom credential via the `credential` parameter
 
 ## API Reference
 
+### LakeFileSystemProtocol
+
+The shared `Protocol` that defines the filesystem contract.
+Both implementations inherit from it, gaining `read_json`,
+`write_json`, and `_resolve` automatically.
+
+Each backend provides its own `read_text`, `write_text`, `exists`,
+and `delete`.
+
 ### LakeFileSystem
 
-The main class for all file operations.
+The fsspec-backed implementation for local / FUSE-mount environments.
 
 ```python
 from dataorc_utils.lake import LakeFileSystem
@@ -137,8 +167,7 @@ Direct connection to ADLS Gen2 — no mounts or Databricks utilities required.
 
 #### Methods
 
-`AdlsLakeFileSystem` exposes the same text, JSON, and directory methods as `LakeFileSystem`,
-plus one additional method:
+`AdlsLakeFileSystem` exposes the same text, JSON, and directory methods as `LakeFileSystem`:
 
 ##### Text Operations
 
@@ -160,7 +189,6 @@ plus one additional method:
 |--------|---------|-------------|
 | `exists(path)` | `bool` | Check if a file exists. |
 | `delete(path)` | `bool` | Delete a file. Returns `True` if deleted, `False` otherwise. |
-| `list_paths(path, recursive=True)` | `list[str]` | List file paths under `path`. Returns paths relative to `base_path`. |
 
 ## Usage in Pipelines
 

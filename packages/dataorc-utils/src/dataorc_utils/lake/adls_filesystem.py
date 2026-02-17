@@ -11,20 +11,18 @@ Requires the ``azure`` extra::
 
 from __future__ import annotations
 
-import json
 import logging
 from typing import Any
 
 from azure.identity import DefaultAzureCredential
 from azure.storage.filedatalake import DataLakeServiceClient
 
+from .protocols import LakeFileSystemProtocol
+
 logger = logging.getLogger(__name__)
 
-# Type alias for JSON-serializable data (matches LakeFileSystem)
-JSONValue = dict[str, Any] | list[Any] | str | int | float | bool | None
 
-
-class AdlsLakeFileSystem:
+class AdlsLakeFileSystem(LakeFileSystemProtocol):
     """ADLS Gen2-backed file operations — drop-in for LakeFileSystem.
 
     Args:
@@ -65,17 +63,6 @@ class AdlsLakeFileSystem:
         self._base_path = base_path.strip("/")
 
     # ------------------------------------------------------------------
-    # Internal helpers
-    # ------------------------------------------------------------------
-
-    def _resolve(self, path: str) -> str:
-        """Join *path* with the configured base-path prefix."""
-        path = path.lstrip("/")
-        if self._base_path:
-            return f"{self._base_path}/{path}"
-        return path
-
-    # ------------------------------------------------------------------
     # Text operations
     # ------------------------------------------------------------------
 
@@ -98,25 +85,6 @@ class AdlsLakeFileSystem:
         resolved = self._resolve(path)
         file_client = self._fs_client.get_file_client(resolved)
         file_client.upload_data(content.encode("utf-8"), overwrite=True)
-
-    # ------------------------------------------------------------------
-    # JSON operations
-    # ------------------------------------------------------------------
-
-    def read_json(self, path: str) -> JSONValue:
-        """Read a JSON file. Returns ``None`` if the file does not exist or parsing fails."""
-        content = self.read_text(path)
-        if content is None:
-            return None
-        try:
-            return json.loads(content)
-        except json.JSONDecodeError as exc:
-            logger.warning("Failed to parse JSON from %s: %s", path, exc)
-            return None
-
-    def write_json(self, path: str, data: JSONValue, indent: int = 2) -> None:
-        """Write a JSON file."""
-        self.write_text(path, json.dumps(data, indent=indent, default=str))
 
     # ------------------------------------------------------------------
     # Directory / existence helpers

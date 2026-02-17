@@ -7,20 +7,12 @@ On Databricks with FUSE mount, paths should include /dbfs/ prefix.
 
 from __future__ import annotations
 
-import json
-import logging
-from pathlib import PurePosixPath
-from typing import Any
-
 import fsspec
 
-logger = logging.getLogger(__name__)
-
-# Type alias for JSON-serializable data
-JSONValue = dict[str, Any] | list[Any] | str | int | float | bool | None
+from .protocols import LakeFileSystemProtocol
 
 
-class LakeFileSystem:
+class LakeFileSystem(LakeFileSystemProtocol):
     """Unified interface for data lake file operations.
 
     Example:
@@ -31,7 +23,7 @@ class LakeFileSystem:
 
     def __init__(self, base_path: str | None = None):
         """Initialize with optional base path prepended to all operations."""
-        self._base_path = PurePosixPath(base_path) if base_path else None
+        self._base_path = base_path.rstrip("/") if base_path else ""
         self._fs: fsspec.AbstractFileSystem | None = None
 
     @property
@@ -40,12 +32,6 @@ class LakeFileSystem:
         if self._fs is None:
             self._fs = fsspec.filesystem("file")
         return self._fs
-
-    def _resolve(self, path: str) -> str:
-        """Join path with base_path if set."""
-        if self._base_path:
-            return str(self._base_path / path.lstrip("/"))
-        return path
 
     # --- Directory Operations ---
 
@@ -79,20 +65,3 @@ class LakeFileSystem:
             self.fs.makedirs(parent, exist_ok=True)
         with self.fs.open(resolved, "w", encoding="utf-8") as f:
             f.write(content)
-
-    # --- JSON Operations ---
-
-    def read_json(self, path: str) -> JSONValue:
-        """Read a JSON file. Returns None if file doesn't exist or parse fails."""
-        content = self.read_text(path)
-        if content is None:
-            return None
-        try:
-            return json.loads(content)
-        except json.JSONDecodeError as exc:
-            logger.warning("Failed to parse JSON from %s: %s", path, exc)
-            return None
-
-    def write_json(self, path: str, data: JSONValue, indent: int = 2) -> None:
-        """Write a JSON file."""
-        self.write_text(path, json.dumps(data, indent=indent, default=str))
