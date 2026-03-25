@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/equinor/dataorc/compare/dataorc-v0.4.0...dataorc-v0.5.0) (2026-03-25)
+
+
+### Features
+
+* **utils:** add streaming read and write methods for JSON files in LakeFileSystem ([#77](https://github.com/equinor/dataorc/issues/77)) ([b5bb231](https://github.com/equinor/dataorc/commit/b5bb231deb55411dc8ddac9ed01aef0ab75cd5b4))
+
 ## [0.4.0](https://github.com/equinor/dataorc/compare/dataorc-v0.3.0...dataorc-v0.4.0) (2026-02-17)
 
 
