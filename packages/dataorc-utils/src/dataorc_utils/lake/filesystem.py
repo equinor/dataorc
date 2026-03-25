@@ -7,9 +7,11 @@ On Databricks with FUSE mount, paths should include /dbfs/ prefix.
 
 from __future__ import annotations
 
+import json
+
 import fsspec
 
-from .protocols import LakeFileSystemProtocol
+from .protocols import JSONValue, LakeFileSystemProtocol
 
 
 class LakeFileSystem(LakeFileSystemProtocol):
@@ -65,3 +67,29 @@ class LakeFileSystem(LakeFileSystemProtocol):
             self.fs.makedirs(parent, exist_ok=True)
         with self.fs.open(resolved, "w", encoding="utf-8") as f:
             f.write(content)
+
+    # --- JSON Operations (streaming) ---
+
+    def read_json(self, path: str) -> JSONValue:
+        """Read a JSON file by streaming from the file handle.
+
+        Returns None if the file doesn't exist.
+        """
+        resolved = self._resolve(path)
+        if not self.fs.exists(resolved):
+            return None
+        with self.fs.open(resolved, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    def write_json(self, path: str, data: JSONValue, indent: int = 2) -> None:
+        """Write a JSON file by streaming directly to the file handle.
+
+        Avoids building the full JSON string in memory compared to
+        the default ``json.dumps`` approach in the protocol.
+        """
+        resolved = self._resolve(path)
+        parent = self.fs._parent(resolved)
+        if parent:
+            self.fs.makedirs(parent, exist_ok=True)
+        with self.fs.open(resolved, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=indent, default=str)
