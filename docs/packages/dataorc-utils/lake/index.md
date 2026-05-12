@@ -95,6 +95,23 @@ if fs.exists("old_file.txt"):
     fs.delete("old_file.txt")
 ```
 
+#### From an `abfss://` URI
+
+If you already have a full `abfss://` path (common in Databricks and ADF), you can
+construct an instance directly from the URI:
+
+```python
+from dataorc_utils.lake import AdlsLakeFileSystem
+
+fs = AdlsLakeFileSystem.from_abfss_uri(
+    "abfss://bronze@testdatadevsc.dfs.core.windows.net/sales/orders"
+)
+
+fs.write_json("config.json", {"version": 1, "status": "complete"})
+```
+
+This parses the container, storage account, and path from the URI automatically.
+
 Authentication uses `DefaultAzureCredential` by default, which supports
 Managed Identity, Azure CLI (`az login`), and environment variables.
 You can also pass a custom credential via the `credential` parameter
@@ -163,6 +180,21 @@ Direct connection to ADLS Gen2 — no mounts or Databricks utilities required.
 | `account_url` | `str` | Full DFS endpoint, e.g. `"https://<account>.dfs.core.windows.net"` |
 | `container` | `str` | File-system / container name, e.g. `"bronze"` |
 | `base_path` | `str` | Optional prefix inside the container prepended to every path. Defaults to `""`. |
+| `credential` | `Any \| None` | Any Azure credential accepted by the SDK. Defaults to `DefaultAzureCredential()`. |
+
+#### `from_abfss_uri` (classmethod)
+
+Construct an `AdlsLakeFileSystem` from a full `abfss://` URI.
+
+```python
+fs = AdlsLakeFileSystem.from_abfss_uri(
+    "abfss://bronze@mystorageaccount.dfs.core.windows.net/raw/pipeline"
+)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `uri` | `str` | Full ABFSS path, e.g. `"abfss://{container}@{account}.dfs.core.windows.net/{path}"` |
 | `credential` | `Any \| None` | Any Azure credential accepted by the SDK. Defaults to `DefaultAzureCredential()`. |
 
 #### Methods
