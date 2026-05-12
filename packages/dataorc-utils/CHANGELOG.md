@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.7.0...dataorc-utils-v0.8.0) (2026-05-12)
+
+
+### Features
+
+* **utils:** add support for constructing AdlsLakeFileSystem from abfss URI ([#83](https://github.com/equinor/dataorc/issues/83)) ([df91413](https://github.com/equinor/dataorc/commit/df9141335ccd606a44529485d47e181595daac7c))
+
 ## [0.7.0](https://github.com/equinor/dataorc/compare/dataorc-utils-v0.6.0...dataorc-utils-v0.7.0) (2026-03-25)
 
 
