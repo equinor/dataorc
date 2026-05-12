@@ -88,12 +88,31 @@ def adls_fs():
         )
 
 
-@pytest.fixture(params=["lake", "adls"])
-def fs(request, lake_fs, adls_fs):
-    """Parametrized fixture that yields both filesystem implementations."""
+@pytest.fixture
+def adls_abfss_fs():
+    """AdlsLakeFileSystem constructed via from_abfss_uri."""
+    with (
+        patch(
+            "dataorc_utils.lake.adls_filesystem.DataLakeServiceClient"
+        ) as mock_service_cls,
+        patch("dataorc_utils.lake.adls_filesystem.DefaultAzureCredential"),
+    ):
+        mock_service = mock_service_cls.return_value
+        mock_service.get_file_system_client.return_value = _InMemoryFsClient()
+
+        yield AdlsLakeFileSystem.from_abfss_uri(
+            "abfss://test@fake.dfs.core.windows.net/"
+        )
+
+
+@pytest.fixture(params=["lake", "adls", "adls_abfss"])
+def fs(request, lake_fs, adls_fs, adls_abfss_fs):
+    """Parametrized fixture that yields all filesystem implementations."""
     if request.param == "lake":
         return lake_fs
-    return adls_fs
+    if request.param == "adls":
+        return adls_fs
+    return adls_abfss_fs
 
 
 # ---------------------------------------------------------------------------

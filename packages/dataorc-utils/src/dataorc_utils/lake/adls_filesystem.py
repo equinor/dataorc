@@ -12,6 +12,7 @@ Requires the ``azure`` extra::
 from __future__ import annotations
 
 import logging
+import urllib.parse
 from typing import Any
 
 from azure.identity import DefaultAzureCredential
@@ -44,6 +45,35 @@ class AdlsLakeFileSystem(LakeFileSystemProtocol):
         fs.write_json("data.json", {"key": "value"})
         data = fs.read_json("data.json")
     """
+
+    @classmethod
+    def from_abfss_uri(
+        cls, uri: str, credential: Any | None = None
+    ) -> AdlsLakeFileSystem:
+        """Construct from an ``abfss://`` URI.
+
+        Args:
+            uri: Full ABFSS path, e.g.
+                ``"abfss://{container}@{account}.dfs.core.windows.net/{path}"``
+            credential: Any Azure credential accepted by the SDK.
+                Defaults to ``DefaultAzureCredential()``.
+        """
+        parsed = urllib.parse.urlparse(uri)
+        if parsed.scheme != "abfss":
+            msg = f"Expected 'abfss' scheme, got {parsed.scheme!r}"
+            raise ValueError(msg)
+        container = parsed.username
+        if not container or not parsed.hostname:
+            msg = f"Invalid abfss URI: {uri!r}"
+            raise ValueError(msg)
+        account_url = f"https://{parsed.hostname}"
+        base_path = parsed.path.lstrip("/")
+        return cls(
+            account_url=account_url,
+            container=container,
+            base_path=base_path,
+            credential=credential,
+        )
 
     def __init__(
         self,
