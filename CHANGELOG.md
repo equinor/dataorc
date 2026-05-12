@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.0](https://github.com/equinor/dataorc/compare/dataorc-v0.4.0...dataorc-v0.5.0) (2026-05-12)
+
+
+### Features
+
+* **utils:** add streaming read and write methods for JSON files in LakeFileSystem ([#77](https://github.com/equinor/dataorc/issues/77)) ([b5bb231](https://github.com/equinor/dataorc/commit/b5bb231deb55411dc8ddac9ed01aef0ab75cd5b4))
+* **utils:** add support for constructing AdlsLakeFileSystem from abfss URI ([#83](https://github.com/equinor/dataorc/issues/83)) ([df91413](https://github.com/equinor/dataorc/commit/df9141335ccd606a44529485d47e181595daac7c))
+
 ## [0.4.0](https://github.com/equinor/dataorc/compare/dataorc-v0.3.0...dataorc-v0.4.0) (2026-02-17)
 
 
