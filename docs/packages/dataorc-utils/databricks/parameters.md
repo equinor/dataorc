@@ -9,12 +9,12 @@ When running Python wheel tasks in Databricks jobs, we set parameters as part of
 Parameters:
 
 - `description` (str): Description shown in the help output.
-- `arguments` (list[str]): List of argument names to parse. Each name becomes a
-  required `--name` CLI flag.
+- `arguments` (list[str] | dict[str, bool]): Either a list of argument names (all required), 
+  or a dict mapping argument names to boolean `required` flags. Each name becomes a `--name` CLI flag.
 
 Returns an `argparse.Namespace` with each argument accessible as an attribute.
 
-## Example (wheel task entry point)
+## Example 1: All required arguments (list)
 
 ```python
 from dataorc_utils.databricks import parse_args
@@ -33,4 +33,20 @@ the script will print:
 
 ```text
 Running on analytics.public.events
+```
+
+## Example 2: Mixed required and optional arguments (dict)
+
+```python
+from dataorc_utils.databricks import parse_args
+
+def main():
+    args = parse_args("ETL Job", {
+        "database": True,   # required
+        "schema": False,    # optional
+        "mode": False       # optional
+    })
+    
+if __name__ == "__main__":
+    main()
 ```
