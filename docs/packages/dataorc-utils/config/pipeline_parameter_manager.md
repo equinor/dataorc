@@ -10,17 +10,21 @@ Environment-driven config assembly. Reads from environment variables.
 from dataorc_utils.config import PipelineParameterManager
 import os
 
-os.environ["env"] = "dev"  # optional; `env` is a plain string (not an enum); defaults to 'dev' when not set
+os.environ["env"] = (
+    "dev"  # optional; `env` is a plain string (not an enum); defaults to 'dev' when not set
+)
 os.environ["datalake_name"] = "mydatalake"
 os.environ["datalake_container_name"] = "data"
 
 mgr = PipelineParameterManager()
 
 # Capture infrastructure variables
-infra = mgr.prepare_infrastructure([
-    "datalake_name",
-    "datalake_container_name",
-])
+infra = mgr.prepare_infrastructure(
+    [
+        "datalake_name",
+        "datalake_container_name",
+    ]
+)
 
 # Build core config
 cfg = mgr.build_core_config(
@@ -80,11 +84,13 @@ Migration note: The previous `Environment` enum was removed — callers must tre
 **Raises:** None. `env` defaults to "dev" when not provided.
 
 ```python
-infra = mgr.prepare_infrastructure([
-    "datalake_name",
-    "datalake_container_name",
-    "az_tenant_id",
-])
+infra = mgr.prepare_infrastructure(
+    [
+        "datalake_name",
+        "datalake_container_name",
+        "az_tenant_id",
+    ]
+)
 ```
 
 ### build_core_config(infra, domain, product, table_name, ...)

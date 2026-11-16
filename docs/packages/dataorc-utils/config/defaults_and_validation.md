@@ -14,7 +14,7 @@ from dataorc_utils.config.enums import Defaults
 Defaults.VERSION  # "v1"
 Defaults.BRONZE_PROCESSING_METHOD  # "incremental"
 Defaults.SILVER_PROCESSING_METHOD  # "incremental"
-Defaults.GOLD_PROCESSING_METHOD    # "delta"
+Defaults.GOLD_PROCESSING_METHOD  # "delta"
 ```
 
 ## print_config(config, title="Pipeline Configuration")
@@ -68,12 +68,16 @@ import os
 from dataorc_utils.config import PipelineParameterManager
 from dataorc_utils.config.validation import print_config
 
-os.environ["env"] = "dev"  # exact name match; set PipelineParameterManager(case_fallback=True) to allow UPPER/lower fallbacks
+os.environ["env"] = (
+    "dev"  # exact name match; set PipelineParameterManager(case_fallback=True) to allow UPPER/lower fallbacks
+)
 os.environ["datalake_container_name"] = "data"
 
 mgr = PipelineParameterManager()
 infra = mgr.prepare_infrastructure(["datalake_container_name"])
-cfg = mgr.build_core_config(infra, domain="sales", product="orders", table_name="order_lines")
+cfg = mgr.build_core_config(
+    infra, domain="sales", product="orders", table_name="order_lines"
+)
 
 print_config(cfg)
 print(cfg.get_lake_path("bronze"))
