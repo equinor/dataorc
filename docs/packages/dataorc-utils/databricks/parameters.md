@@ -19,9 +19,11 @@ Returns an `argparse.Namespace` with each argument accessible as an attribute.
 ```python
 from dataorc_utils.databricks import parse_args
 
+
 def main():
     args = parse_args("ETL Job", ["database", "schema", "table"])
     print(f"Running on {args.database}.{args.schema}.{args.table}")
+
 
 if __name__ == "__main__":
     main()

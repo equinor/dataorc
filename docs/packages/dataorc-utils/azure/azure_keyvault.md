@@ -32,8 +32,8 @@ You can customize retry behavior:
 val = get_keyvault_secret(
     vault_url="https://myvault.vault.azure.net/",
     secret_name="my-secret",
-    max_retries=5,      # Default: 3
-    retry_delay=2.0,    # Default: 1.0 seconds (doubles each retry)
+    max_retries=5,  # Default: 3
+    retry_delay=2.0,  # Default: 1.0 seconds (doubles each retry)
 )
 ```
 

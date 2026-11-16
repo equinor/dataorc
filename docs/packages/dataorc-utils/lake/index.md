@@ -81,7 +81,7 @@ from dataorc_utils.lake import AdlsLakeFileSystem
 fs = AdlsLakeFileSystem(
     account_url="https://testdatadevsc.dfs.core.windows.net",
     container="bronze",
-    base_path="sales/orders",          # optional prefix inside the container
+    base_path="sales/orders",  # optional prefix inside the container
 )
 
 # Same API from here on
@@ -241,11 +241,14 @@ cfg = mgr.build_core_config(infra, domain="sales", product="orders", table_name=
 fs = LakeFileSystem(base_path=cfg.get_lake_path("bronze"))
 
 # Now all operations are relative to the bronze path
-fs.write_json("_metadata/run_info.json", {
-    "pipeline": "orders_ingestion",
-    "timestamp": "2026-02-02T10:00:00Z",
-    "records_processed": 1500
-})
+fs.write_json(
+    "_metadata/run_info.json",
+    {
+        "pipeline": "orders_ingestion",
+        "timestamp": "2026-02-02T10:00:00Z",
+        "records_processed": 1500,
+    },
+)
 ```
 
 ### Path Handling
